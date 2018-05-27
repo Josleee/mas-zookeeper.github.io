@@ -51,15 +51,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#tab5">
-                            <span data-feather="users"></span>
-                            Discussion
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="https://github.com/Josleee/mas-zookeeper.github.io">
                             <span data-feather="github"></span>
                             Sources (on GitHub)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tab5">
+                            <span data-feather="users"></span>
+                            About
                         </a>
                     </li>
                 </ul>
@@ -71,21 +71,62 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Introduction</h1>
+                    <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
+                <h5>Analysis of Zookeeper software for distributed systems</h5>
+                <p>Apache ZooKeeper is a service used by distributed systems to coordinate between themselves and
+                    maintain shared data with robust synchronization techniques. The processes in a zookeeper managed
+                    cluster is managed by a leader. The leader node is selected from the list of nodes by election. The
+                    rest of the nodes are called as followers. These are the servers which would be servicing the
+                    clients. There is also a watcher node, which helps to detect failures and helps in new leader
+                    election.</p>
+                <p>Zookeeper mainly does two tasks:</p>
+                <ol>
+                    <li>Active Messaging:</li>
+                    <p>In distributed systems, we have a group of servers each providing service to clients. The clients
+                        have a list of servers they can connect to. They send a request to the server they want to
+                        connect to, if the request is successful, the server sends an acknowledgement, if the connection
+                        is refused by the server, the client tries to connect to a different server.</p>
+                    <p>Each client can either send a data read request or a data write request. In the event of data
+                        read request, the server will read the data from its copy of the database and sends the
+                        response, or it sends an acknowledgement stating that the data was not present in the
+                        database.</p>
+                    <p>When the client sends a data write request, the server does not update the database im-
+                        mediately. The write request is sent to the leader, the leader verifies whether the request is
+                        genuine and then announces to all the servers in zookeeper to update their copies of the
+                        database with the data that is to be written. The collection of servers in zookeeper is called a
+                        quorum. If a sufficient number of servers respond back to the leader’s announcement, then the
+                        write is permitted by the leader. This way the data is updated in all the servers copy of the
+                        database. Once the write is successful, acknowledgement is sent to the client.</p>
+                    <li>Leadership Election:</li>
+                    <p>All the servers in zookeeper, create a sequential, ephemeral znode with the same path. The
+                        zookeeper ensemble, appends a 10 digit sequence number to the path.Based on the config- uration,
+                        the node with the smallest sequence number can be made as the leader.The rest of the nodes are
+                        the followers. Each follower watches the node with the next smallest se- quence number.If the
+                        leader fails, the watcher node sends a notification to the node which was watching the current
+                        leader.This node then checks if there are any nodes with a lower sequence number then itself. If
+                        it finds such a node, then that node is made as the next leader, else the same node is made as
+                        the leader.
+                    </p>
+                </ol>
+                <h5>Epistemic logic in Zookeeper</h5>
+                <p>Using Epistemic logic, we can analyze the different functionalities of the software. We can also
+                    analyze different situations of failures and how the software handles these situations.</p>
             </div>
 
             <div class="main-content" id="tab2" style="display: none;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Implementation</h1>
+                    <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
-                <p>djaskldjlasjdkljsalkdjkasldjklajsdljaskl</p>
             </div>
 
             <div class="main-content" id="tab3" style="display: none;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Application</h1>
+                    <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
             </div>
 
@@ -93,14 +134,25 @@
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Conclusion</h1>
+                    <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
             </div>
 
             <div class="main-content" id="tab5" style="display: none;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
-                    <h1 class="h2">Discussion</h1>
+                    <h1 class="h2">About</h1>
+                    <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
+                <p>This website offers a implementation of Zookeeper protocol with Kripke models. The model checker was
+                    developed for the Multi Agent Systems course at the University of Groningen for the academic year of
+                    2018/2019.</p>
+                <p>Group members:</p>
+                <ul>
+                    <li>Arjun Harish</li>
+                    <li>Yikun Li</li>
+                    <li>Parth Tiwary</li>
+                </ul>
             </div>
             <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
         </main>
