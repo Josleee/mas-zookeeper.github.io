@@ -129,32 +129,54 @@
                     <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
                 <div style="position: relative; width: 95em; height: 45em; /*border: 3px solid #73AD21;*/">
+                    <button id="b1r" type="button" style="position: absolute; top: 7em; left: -1em"
+                            class="btn btn-light">Read
+                    </button>
+                    <button id="b1w" type="button" style="position: absolute; top: 10em; left: -1em"
+                            class="btn btn-light">Store
+                    </button>
+                    <button id="b2r" type="button" style="position: absolute; top: 16em; left: -1em"
+                            class="btn btn-light">Read
+                    </button>
+                    <button id="b2w" type="button" style="position: absolute; top: 19em; left: -1em"
+                            class="btn btn-light">Store
+                    </button>
+                    <button id="b3r" type="button" style="position: absolute; top: 24.7em; left: -1em"
+                            class="btn btn-light">Read
+                    </button>
+                    <button id="b3w" type="button" style="position: absolute; top: 27.7em; left: -1em"
+                            class="btn btn-light">Store
+                    </button>
+
                     <img src="assets/images/icons/Client.png" alt="client-computer" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 8em; left: 5em">
+                    position: absolute; top: 8em; left: 5em" id="c1">
                     <img src="assets/images/icons/IPhone.png" alt="client-phone" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 18em; left: 5em">
+                    position: absolute; top: 18em; left: 5em" id="c2">
                     <img src="assets/images/icons/Client.png" alt="client-computer" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 28em; left: 5em">
+                    position: absolute; top: 28em; left: 5em" id="c3">
                     <img src="assets/images/icons/Server.png" alt="server" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 2em; left: 37.5em">
+                    position: absolute; top: 2em; left: 37.5em" id="s1">
                     <img src="assets/images/icons/Server.png" alt="server" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 10em; left: 37.5em">
+                    position: absolute; top: 10em; left: 37.5em" id="s2">
                     <img src="assets/images/icons/Server.png" alt="server" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 18em; left: 37.5em">
+                    position: absolute; top: 18em; left: 37.5em" id="s3">
                     <img src="assets/images/icons/Server.png" alt="server" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 26em; left: 37.5em">
+                    position: absolute; top: 26em; left: 37.5em" id="s4">
                     <img src="assets/images/icons/Server.png" alt="server" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 34em; left: 37.5em">
+                    position: absolute; top: 34em; left: 37.5em" id="s5">
                     <img src="assets/images/icons/Database.png" alt="database" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 2em; left: 70em">
+                    position: absolute; top: 2em; left: 70em" id="d1">
                     <img src="assets/images/icons/Database.png" alt="database" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 10em; left: 70em">
+                    position: absolute; top: 10em; left: 70em" id="d2">
                     <img src="assets/images/icons/Database.png" alt="database" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 18em; left: 70em">
+                    position: absolute; top: 18em; left: 70em" id="d3">
                     <img src="assets/images/icons/Database.png" alt="database" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 26em; left: 70em">
+                    position: absolute; top: 26em; left: 70em" id="d4">
                     <img src="assets/images/icons/Database.png" alt="database" style="width:6.25em;height:6.25em;
-                    position: absolute; top: 34em; left: 70em">
+                    position: absolute; top: 34em; left: 70em" id="d5">
+
+                    <img src="assets/images/spark.gif" alt="database" style="width:5em;height:5em;
+                    position: absolute; top: 50em; left: 50em" id="spark">
                 </div>
             </div>
 
@@ -275,6 +297,17 @@
         duration: 2000,
         loop: true
     });
+
+    function moveSpark() {
+        var cssSelector = anime({
+            targets: '#spark',
+            duration: 3000,
+            translateX: 500,
+            translateY: -300
+        });
+    }
+
+    moveSpark();
 </script>
 </body>
 </html>
