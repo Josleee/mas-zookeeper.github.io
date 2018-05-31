@@ -403,6 +403,8 @@
 
 <script src="assets/js/anime.min.js"></script>
 <script>
+    var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+    var leader = 0;
     $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
     // $('.scnn.s5').show();
@@ -411,50 +413,84 @@
     $(document).ready(function () {
         //  When user clicks on tab, this code will be executed
         $("#btn-reset").click(function () {
-            $('.cnn, .scnn').hide();
+            $('.cnn, .scnn, .num-box').hide();
             $('.d1, .d2, .d3, .d4, .d5').show();
+            le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
         });
 
         $("#btn-init").click(function () {
-            var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
             shuffle(le);
             for (let i = 0; i < 5; i++) {
                 $('#ns' + (i + 1)).text(le[i]);
             }
-
-            $('.scnn').fadeIn(2000);
+            console.log(analyse_label());
+            $('.scnn.s1').fadeIn(2000);
             $('.num-box').fadeIn(3000);
         });
     });
 
-    anime({
-        targets: 'div#tab5',
-        translateX: [
-            {value: 100, duration: 1200},
-            {value: 0, duration: 800}
-        ],
-        rotate: '1turn',
-        backgroundColor: '#FFF',
-        duration: 2000,
-        loop: true
-    });
+    // anime({
+    //     targets: 'div#tab5',
+    //     translateX: [
+    //         {value: 100, duration: 1200},
+    //         {value: 0, duration: 800}
+    //     ],
+    //     rotate: '1turn',
+    //     backgroundColor: '#FFF',
+    //     duration: 2000,
+    //     loop: true
+    // });
 
-    function moveSpark(pX, pY) {
-        var el = document.querySelector('#spark');
-        $(el).show();
+    // function moveSpark(pX, pY) {
+    //     var el = document.querySelector('#spark');
+    //     $(el).show();
+    //
+    //     var domNode = anime({
+    //         targets: el,
+    //         rotate: '1turn',
+    //         duration: 3000,
+    //         translateX: pX,
+    //         translateY: pY
+    //     });
+    //     // $(el).show(0).delay(2000).hide(0);
+    // }
+    // moveSpark(200, -200);
 
-        var domNode = anime({
-            targets: el,
-            rotate: '1turn',
-            duration: 3000,
-            translateX: pX,
-            translateY: pY
-        });
-        // $(el).show(0).delay(2000).hide(0);
+    function analyse_label() {
+        var tmp = [];
+        var c_le = le.slice();
+        while (true) {
+            var inv_count = 0;
+            for (let i = 0; i < c_le.length; i++) {
+                if ('invalid' == c_le[i]) {
+                    inv_count += 1;
+                }
+            }
+            if (inv_count == c_le.length) {
+                break;
+            }
+
+            var ms = 999;
+            var ind = -1;
+            for (let i = 0; i < c_le.length; i++) {
+                if ('invalid' == c_le[i]) {
+                    continue;
+                }
+
+                if (ms >= parseInt(c_le[i].slice(-1))) {
+                    ms = parseInt(c_le[i].slice(-1));
+                    ind = i
+                }
+            }
+            c_le[ind] = 'invalid';
+            tmp.push(ind + 1);
+        }
+
+        for (let i = 1; i < tmp.length; i++) {
+            $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).fadeIn(2000);
+        }
+        return tmp;
     }
-
-    moveSpark(200, -200);
-
 
     /**
      * Shuffles array in place.
