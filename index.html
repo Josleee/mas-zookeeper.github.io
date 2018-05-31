@@ -404,7 +404,7 @@
 <script src="assets/js/anime.min.js"></script>
 <script>
     var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
-    var leader = 0;
+    var l_le = [];
     $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
     // $('.scnn.s5').show();
@@ -416,6 +416,7 @@
             $('.cnn, .scnn, .num-box').hide();
             $('.d1, .d2, .d3, .d4, .d5').show();
             le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+            $('.scnn').css('stroke', 'grey');
         });
 
         $("#btn-init").click(function () {
@@ -423,9 +424,10 @@
             for (let i = 0; i < 5; i++) {
                 $('#ns' + (i + 1)).text(le[i]);
             }
-            console.log(analyse_label());
-            $('.scnn.s1').fadeIn(2000);
-            $('.num-box').fadeIn(3000);
+
+            l_le = analyse_label();
+            $('.scnn.s' + l_le[0]).fadeIn(2000);
+            $('.num-box').fadeIn(2000);
         });
     });
 
@@ -488,6 +490,7 @@
 
         for (let i = 1; i < tmp.length; i++) {
             $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).fadeIn(2000);
+            $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).css('stroke', '#3d9aff');
         }
         return tmp;
     }
