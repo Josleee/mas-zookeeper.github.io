@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="assets/images/favicon.ico">
+    <!--<link rel="icon" href="assets/images/favicon.ico">-->
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title>Zookeeper in Distributed System</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -306,8 +306,8 @@
                         Sorry, your browser does not support inline SVG.
                     </svg>
 
-                    <img src="assets/images/spark.gif" alt="database" style="display:none;width:5em;height:5em;
-                    position: absolute; top: 50em; left: 50em" id="spark">
+                    <!--<img src="assets/images/spark.gif" alt="database" style="display:none;width:5em;height:5em;-->
+                    <!--position: absolute; top: 50em; left: 50em" id="spark">-->
                 </div>
             </div>
 
@@ -343,10 +343,10 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="assets/js/jquery-3.3.1.slim.min.js"
+<script src="assets/js/jquery-3.3.1.min.js">
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="assets/js/jquery-3.3.1.slim.min.js"><\/script>')</script>
+<script>window.jQuery || document.write('<script src="assets/js/jquery-3.3.1.min.js"><\/script>')</script>
 <script src="assets/js/popper.min.js"></script>
 
 <!-- Icons -->
@@ -383,38 +383,6 @@
 
 </script>
 
-<!-- Graphs -->
-<script src="assets/js/chart.min.js"></script>
-<script>
-    var ctx = document.getElementById("myChart");
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            datasets: [{
-                data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-                lineTension: 0,
-                backgroundColor: 'transparent',
-                borderColor: '#007bff',
-                borderWidth: 4,
-                pointBackgroundColor: '#007bff'
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }
-                }]
-            },
-            legend: {
-                display: false,
-            }
-        }
-    });
-</script>
-
 <script src="assets/js/anime.min.js"></script>
 <script>
     $('.cnn, .scnn').hide();
@@ -426,6 +394,11 @@
         //  When user clicks on tab, this code will be executed
         $("#btn-reset").click(function () {
             $('.cnn, .scnn').hide();
+            $('.d1, .d2, .d3, .d4, .d5').show();
+        });
+
+        $("#btn-init").click(function () {
+            $('.s1').fadeIn();
         });
     });
 
