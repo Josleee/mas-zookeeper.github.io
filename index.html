@@ -236,6 +236,27 @@
                         Kb(S5)
                     </div>
 
+                    <div id="ns1" style="position: absolute; top: 7.5em; left: 38.75em; width: 6em; height: 3em;
+                    border: 0px dashed #73AD21; padding: 0.5em" class="num-box">
+                        /le/001
+                    </div>
+                    <div id="ns2" style="position: absolute; top: 15.5em; left: 38.75em; width: 6em; height: 3em;
+                    border: 0px dashed #73AD21; padding: 0.5em" class="num-box">
+                        /le/001
+                    </div>
+                    <div id="ns3" style="position: absolute; top: 23.5em; left: 38.75em; width: 6em; height: 3em;
+                    border: 0px dashed #73AD21; padding: 0.5em" class="num-box">
+                        /le/001
+                    </div>
+                    <div id="ns4" style="position: absolute; top: 31.5em; left: 38.75em; width: 6em; height: 3em;
+                    border: 0px dashed #73AD21; padding: 0.5em" class="num-box">
+                        /le/001
+                    </div>
+                    <div id="ns5" style="position: absolute; top: 39.5em; left: 38.75em; width: 6em; height: 3em;
+                    border: 0px dashed #73AD21; padding: 0.5em" class="num-box">
+                        /le/001
+                    </div>
+
                     <div id="drawing"></div>
                     <svg height="45em" width="95em">
                         <line class="s1 d1 cnn" x1="54em" y1="5em" x2="69em" y2="5em"
@@ -343,9 +364,6 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="assets/js/jquery-3.3.1.min.js">
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="assets/js/jquery-3.3.1.min.js"><\/script>')</script>
 <script src="assets/js/popper.min.js"></script>
 
@@ -385,7 +403,7 @@
 
 <script src="assets/js/anime.min.js"></script>
 <script>
-    $('.cnn, .scnn').hide();
+    $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
     // $('.scnn.s5').show();
     // $('.c1.s5').show();
@@ -398,7 +416,14 @@
         });
 
         $("#btn-init").click(function () {
-            $('.s1').fadeIn();
+            var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+            shuffle(le);
+            for (let i = 0; i < 5; i++) {
+                $('#ns' + (i + 1)).text(le[i]);
+            }
+
+            $('.scnn').fadeIn(2000);
+            $('.num-box').fadeIn(3000);
         });
     });
 
@@ -429,6 +454,22 @@
     }
 
     moveSpark(200, -200);
+
+
+    /**
+     * Shuffles array in place.
+     * @param {Array} a items An array containing the items.
+     */
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = a[i];
+            a[i] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
 </script>
 </body>
 </html>
