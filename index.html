@@ -405,6 +405,10 @@
 <script>
     var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
     var l_le = [];
+    var c1c = -1;
+    var c2c = -1;
+    var c3c = -1;
+
     $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
     // $('.scnn.s5').show();
@@ -428,6 +432,25 @@
             l_le = analyse_label();
             $('.scnn.s' + l_le[0]).fadeIn(2000);
             $('.num-box').fadeIn(2000);
+        });
+
+        $("#b1r").click(function () {
+            if (c1c != -1) {
+                console.log('Find connection');
+                // Send read request to c1c
+            } else {
+                var list_server = [1, 2, 3, 4, 5];
+                shuffle(list_server);
+                for (let i = 0; i < list_server.length; i++) {
+                    $('.cnn.c1.s' + list_server[i]).show();
+                    if (connect_server(list_server[i])) {
+                        break;
+                    } else {
+                        $('.cnn.c1.s' + list_server[i]).hide(1000);
+                        continue;
+                    }
+                }
+            }
         });
     });
 
@@ -457,6 +480,10 @@
     //     // $(el).show(0).delay(2000).hide(0);
     // }
     // moveSpark(200, -200);
+
+    function connect_server(num) {
+        return true;
+    }
 
     function analyse_label() {
         var tmp = [];
