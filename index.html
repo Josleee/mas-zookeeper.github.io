@@ -290,15 +290,15 @@
                         <!--<path class="s5 d5 cnn" x1="54em" y1="37em" x2="69em" y2="37em"-->
                         <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
                         <path class="s1 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M520 70 L300 150 Z"></path>
+                              d="M300 150L 520 70"></path>
                         <path class="s2 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M520 186 L300 150 Z"></path>
+                              d="M300 150L 520 186"></path>
                         <path class="s3 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M520 298 L300 150 Z"></path>
+                              d="M300 150 L520 298 "></path>
                         <path class="s4 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M520 410 L300 150 Z"></path>
+                              d="M300 150 L520 410 "></path>
                         <path class="s5 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M520 523 L300 150 Z"></path>
+                              d="M300 150L 520 523"></path>
 
                         <path class="s1 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="5em"
                               style="stroke:rgb(150,150,150);stroke-width:2px"></path>
@@ -503,7 +503,6 @@
                 }
             }
         });
-
         // With JQuery
         $("#ex5").slider();
     });
@@ -554,6 +553,8 @@
         }
         // var path = anime.path('.scnn.s1.s2');
         var box = document.querySelector('#movingbox');
+//        var distanceX = path('x').t - 30;
+//        path('y').totalLength = path('y').totalLength - 20;
         var motionPath = anime({
             targets: box,
             translateX: path('x'),
@@ -563,7 +564,15 @@
             loop: false,
             duration: 4300,
         });
-        motionPath.play()
+            console.log(path('x'))
+            motionPath.play()
+        var complete = anime ({
+            targets:box,
+            complete: function(anim) {
+            $('.movingbox').hide()
+            }
+        });
+
     }
 
     function connect_server(Cnum, Snum) {
