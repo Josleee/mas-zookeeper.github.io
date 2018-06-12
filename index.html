@@ -140,9 +140,11 @@
                            data-slider-min="1"
                            data-slider-max="3"
                            data-slider-step="1"
-                           data-slider-value="3"
+                           data-slider-value="2"
                            data-slider-tooltip="hide"/>
                 </div>
+
+                <button id="btn-speed" type="button" class="btn btn-outline-secondary">Set speed</button>
 
                 <div style="position: relative; width: 95em; height: 45em; /*border: 3px solid #73AD21;*/">
                     <button id="b1r" type="button" style="position: absolute; top: 7em; left: -1em"
@@ -268,7 +270,7 @@
                     </div>
 
                     <div id="drawing"></div>
-                    <svg height="45em" width="95em">
+                    <svg height="45em" width="95em" id="svgsection">
                         <!--<path class="s1 d1 cnn" x1="54em" y1="5em" x2="69em" y2="5em"-->
                         <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
                         <path class="s1 d1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
@@ -300,38 +302,60 @@
                         <path class="s5 c1 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M300 150L 520 523"></path>
 
-                        <path class="s1 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="5em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s2 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="13em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s3 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="21em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s4 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="29em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s5 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="37em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
+                        <!--<path class="s1 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="5em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s2 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="13em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s3 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="21em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s4 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="29em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s5 c1 cnn" x1="21.5em" y1="11em" x2="37em" y2="37em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
 
-                        <path class="s1 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="5em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s2 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="13em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s3 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="21em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s4 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="29em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s5 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="37em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
+                        <!--<path class="s1 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="5em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s2 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="13em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s3 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="21em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s4 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="29em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s5 c2 cnn" x1="21.5em" y1="21em" x2="37em" y2="37em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
 
-                        <path class="s1 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="5em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s2 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="13em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s3 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="21em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s4 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="29em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
-                        <path class="s5 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="37em"
-                              style="stroke:rgb(150,150,150);stroke-width:2px"></path>
+                        <path class="s1 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 300L 520 70"></path>
+                        <path class="s2 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 300L 520 186"></path>
+                        <path class="s3 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 300 L520 298 "></path>
+                        <path class="s4 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 300 L520 410 "></path>
+                        <path class="s5 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 300L 520 523"></path>
+
+                        <!--<path class="s1 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="5em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s2 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="13em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s3 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="21em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s4 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="29em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+                        <!--<path class="s5 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="37em"-->
+                        <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
+
+                        <path class="s1 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 450L 520 70"></path>
+                        <path class="s2 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 450L 520 186"></path>
+                        <path class="s3 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 450 L520 298 "></path>
+                        <path class="s4 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 450 L520 410 "></path>
+                        <path class="s5 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                              d="M300 450L 520 523"></path>
 
                         <path class="s1 s2 scnn" d="M 520 70 q -100 58 0 116" stroke="grey" stroke-width="2"
                               fill="none"></path>
@@ -354,9 +378,9 @@
                         <path class="s1 s5 scnn" d="M 520 70 q -400 225 0 450" stroke="grey" stroke-width="2"
                               fill="none"></path>
 
-                        <rect class="movingbox" x="50" y="20" width="100" height="35"
-                              style="fill:rgba(5,5,5,0.57);stroke:black;stroke-width:5;opacity:0.5"
-                              id="movingbox"></rect>
+                        <!--<rect class="movingbox" x="50" y="20" width="100" height="35"-->
+                        <!--style="fill:rgba(5,5,5,0.57);stroke:black;stroke-width:5;opacity:0.5"-->
+                        <!--id="movingbox"></rect>-->
                         Sorry, your browser does not support inline SVG.
                     </svg>
                     <!--<img src="assets/images/spark.gif" alt="database" style="display:none;width:5em;height:5em;-->
@@ -452,21 +476,21 @@
         4: -1,
         5: -1,
     };
-
     $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
     // $('.scnn.s5').show();
     // $('.c1.s5').show();
+    var svg = document.getElementsByTagName('svg')[6];
 
     $(document).ready(function () {
         //  When user clicks on tab, this code will be executed
+        var speed = $('#ex21').data('slider').options.value;
         $("#btn-reset").click(function () {
             $('.cnn, .scnn, .num-box').hide();
             $('.d1, .d2, .d3, .d4, .d5').show();
             le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
             $('.scnn').css('stroke', 'grey');
         });
-
         $("#btn-init").click(function () {
             shuffle(le);
             for (let i = 0; i < 5; i++) {
@@ -479,8 +503,9 @@
             $('.num-box').fadeIn(2000);
 
         });
-
+//        create_box()
         $("#b1r").click(function () {
+            var flag = 0
             if (client_Connections[1] != -1) {
                 console.log('Find connection');
                 // Send read request to c1c
@@ -491,22 +516,89 @@
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c1.s' + list_server[i]).show();
-                    if (connect_server(client_Connections[1], list_server[i])) {
-                        client_Connections[1] = list_server[i];
-                        var path = '.cnn.c1.s' + list_server[i]
-                        start_Communication_c1(list_server[i])
+                    client_Connections[1] = list_server[i];
+                    start_Communication_c1(list_server[i], speed, function () {
+                        if (connect_server(client_Connections[1], list_server[i])) {
+                                server_ack_c1(list_server[i], speed, function () {
+//                                delete_box(1)
+//                                delete_box('1ack')
+                                    flag = 1
+                                });
+                        } else {
+                            server_Nack();
+                        }
+                    });
+                    if (flag == 1) {
                         break;
                     } else {
-                        $('.cnn.c1.s' + list_server[i]).hide(1000);
+                        continue;
+                    }
+                }
+            }
+
+
+//                        break;
+//                    } else {
+//                        $('.cnn.c1.s' + list_server[i]).hide(1000);
+//                        continue;
+//                    }
+
+        });
+
+        $("#b2r").click(function () {
+            if (client_Connections[2] != -1) {
+                console.log('Find connection');
+                // Send read request to c1c
+
+            } else {
+                //Client is free
+                var list_server = [1, 2, 3, 4, 5];
+                shuffle(list_server);
+                for (let i = 0; i < list_server.length; i++) {
+                $('.cnn.c2.s' + list_server[i]).show();
+                    if (connect_server(client_Connections[2], list_server[i])) {
+                client_Connections[2] = list_server[i];
+                start_Communication_c2(list_server[i], speed);
+                        break;
+                    } else {
+                        $('.cnn.c2.s' + list_server[i]).hide(1000);
+                        continue;
+                    }
+                }
+            }
+        });
+
+
+        $("#b3r").click(function () {
+            if (client_Connections[3] != -1) {
+                console.log('Find connection');
+                // Send read request to c1c
+
+            } else {
+                //Client is free
+                var list_server = [1, 2, 3, 4, 5];
+                shuffle(list_server);
+                for (let i = 0; i < list_server.length; i++) {
+                $('.cnn.c3.s' + list_server[i]).show();
+                    if (connect_server(client_Connections[3], list_server[i])) {
+                client_Connections[3] = list_server[i];
+                start_Communication_c3(list_server[i], speed);
+                        break;
+                    } else {
+                        $('.cnn.c3.s' + list_server[i]).hide(1000);
                         continue;
                     }
                 }
             }
         });
         // With JQuery
-        $("#ex5").slider();
-    });
-
+        $("#ex21").slider();
+        $('#btn-speed').on("click", function () {
+            speed = $('#ex21').data('slider').options.value;
+            console.log(speed)
+        });
+    })
+    ;
     // anime({
     //     targets: 'div#tab5',
     //     translateX: [
@@ -535,7 +627,7 @@
     // moveSpark(200, -200);
 
 
-    function start_Communication_c1(server_number) {
+    function start_Communication_c1(server_number, speed, callback) {
         if (server_number == 1) {
             var path = anime.path('.cnn.c1.s1')
         }
@@ -551,8 +643,9 @@
         if (server_number == 5) {
             var path = anime.path('.cnn.c1.s5')
         }
-        // var path = anime.path('.scnn.s1.s2');
-        var box = document.querySelector('#movingbox');
+        var id = 1
+        var box = create_box(id)
+//        var box = document.querySelector('#movingbox');
 //        var distanceX = path('x').t - 30;
 //        path('y').totalLength = path('y').totalLength - 20;
         var motionPath = anime({
@@ -562,17 +655,160 @@
             rotate: path('angle'),
             easing: 'linear',
             loop: false,
-            duration: 4300,
+            duration: 6000 / speed,
         });
-            console.log(path('x'))
-            motionPath.play()
-        var complete = anime ({
-            targets:box,
-            complete: function(anim) {
-            $('.movingbox').hide()
+        var slider = document.getElementsByName('#ex21')
+        motionPath.play()
+        var complete = anime({
+            targets: box,
+            delay: 600 * speed,
+            complete: function (anim) {
+                $('#movingbox' + id).hide()
             }
         });
+        callback()
+    }
 
+    function delete_box(id) {
+        $("#movingbox" + id).remove();
+    }
+
+    function create_box(id) {
+        var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+//        var rect = document.createElementNS(svgNS,'rect');
+        rect.setAttribute('x', 45);
+        rect.setAttribute('y', 20);
+        rect.setAttribute('width', 100);
+        rect.setAttribute('height', 35);
+        rect.setAttribute('fill', 'rgba(5,5,5,0.57)');
+        rect.setAttribute('stroke', 'black');
+        rect.setAttribute('stroke-width', 5);
+        rect.setAttribute('opacity', 0.5);
+        rect.setAttribute('id', 'movingbox' + id)
+        svg.appendChild(rect);
+//        document.body.appendChild(svg);
+        return rect
+    }
+
+    function start_Communication_c2(server_number, speed) {
+        if (server_number == 1) {
+            var path = anime.path('.cnn.c2.s1')
+        }
+        if (server_number == 2) {
+            var path = anime.path('.cnn.c2.s2')
+        }
+        if (server_number == 3) {
+            var path = anime.path('.cnn.c2.s3')
+        }
+        if (server_number == 4) {
+            var path = anime.path('.cnn.c2.s4')
+        }
+        if (server_number == 5) {
+            var path = anime.path('.cnn.c2.s5')
+        }
+        var id = 2
+        var box = create_box(id)
+//        var distanceX = path('x').t - 30;
+//        path('y').totalLength = path('y').totalLength - 20;
+        var motionPath = anime({
+            targets: box,
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            loop: false,
+            duration: 6000 / speed,
+        });
+        var slider = document.getElementsByName('#ex21')
+        motionPath.play()
+        var complete = anime({
+            targets: box,
+            delay: 600 * speed,
+            complete: function (anim) {
+                $('#movingbox' + id).hide()
+            }
+        });
+    }
+
+    function start_Communication_c3(server_number, speed) {
+        if (server_number == 1) {
+            var path = anime.path('.cnn.c3.s1')
+        }
+        if (server_number == 2) {
+            var path = anime.path('.cnn.c3.s2')
+        }
+        if (server_number == 3) {
+            var path = anime.path('.cnn.c3.s3')
+        }
+        if (server_number == 4) {
+            var path = anime.path('.cnn.c3.s4')
+        }
+        if (server_number == 5) {
+            var path = anime.path('.cnn.c3.s5')
+        }
+        var id = 3;
+        var box = create_box(id)
+//        var distanceX = path('x').t - 30;
+//        path('y').totalLength = path('y').totalLength - 20;
+        var motionPath = anime({
+            targets: box,
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            loop: false,
+            duration: 6000 / speed,
+        });
+        var slider = document.getElementsByName('#ex21')
+        motionPath.play()
+        var complete = anime({
+            targets: box,
+            delay: 600 * speed,
+            complete: function (anim) {
+                $('#movingbox' + id).hide()
+            }
+        });
+    }
+
+    function server_ack_c1(server_number, speed, callback) {
+
+        if (server_number == 1) {
+            var path = anime.path('.cnn.c1.s1')
+        }
+        if (server_number == 2) {
+            var path = anime.path('.cnn.c1.s2')
+        }
+        if (server_number == 3) {
+            var path = anime.path('.cnn.c1.s3')
+        }
+        if (server_number == 4) {
+            var path = anime.path('.cnn.c1.s4')
+        }
+        if (server_number == 5) {
+            var path = anime.path('.cnn.c1.s5')
+        }
+        console.log(path('x'))
+        var id = '1ack';
+        var box = create_box(id)
+        var reverse = anime({
+            targets: box,
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            direction: 'reverse',
+            easing: 'linear',
+            duration: 6000 / speed,
+        });
+        var slider = document.getElementsByName('#ex21')
+        reverse.play()
+        var complete = anime({
+            targets: box,
+            delay: 600 * speed,
+            complete: function (anim) {
+                $('#movingbox' + id).hide()
+            }
+        });
+        callback()
     }
 
     function connect_server(Cnum, Snum) {
@@ -586,9 +822,10 @@
         else {
             //Server is busy
             console.log(false)
-            return false;
+            return false
         }
     }
+
 
     function analyse_label() {
         var tmp = [];
