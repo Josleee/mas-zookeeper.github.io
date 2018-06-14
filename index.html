@@ -328,15 +328,15 @@
                         <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
 
                         <path class="s1 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 300L 520 70"></path>
+                              d="M300 300 L520 70"></path>
                         <path class="s2 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 300L 520 186"></path>
+                              d="M300 300 L520 186"></path>
                         <path class="s3 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M300 300 L520 298 "></path>
                         <path class="s4 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M300 300 L520 410 "></path>
                         <path class="s5 c2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 300L 520 523"></path>
+                              d="M300 300 L520 523"></path>
 
                         <!--<path class="s1 c3 cnn" x1="21.5em" y1="31em" x2="37em" y2="5em"-->
                         <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
@@ -350,15 +350,15 @@
                         <!--style="stroke:rgb(150,150,150);stroke-width:2px"></path>-->
 
                         <path class="s1 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 450L 520 70"></path>
+                              d="M300 450 L520 70"></path>
                         <path class="s2 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 450L 520 186"></path>
+                              d="M300 450 L520 186"></path>
                         <path class="s3 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M300 450 L520 298 "></path>
                         <path class="s4 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M300 450 L520 410 "></path>
                         <path class="s5 c3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
-                              d="M300 450L 520 523"></path>
+                              d="M300 450 L520 523"></path>
 
                         <path class="s1 s2 scnn" d="M 520 70 q -100 58 0 116" stroke="grey" stroke-width="2"
                               fill="none"></path>
@@ -464,14 +464,16 @@
 
 <script src="assets/js/anime.min.js"></script>
 <script>
-    var le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+    let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+    let box_width = 80;
+    let box_height = 35;
     var l_le = [];
-    var client_Connections = {
+    var client_connections = {
         1: -1,
         2: -1,
         3: -1,
     };
-    var server_Connections = {
+    var server_connections = {
         1: -1,
         2: -1,
         3: -1,
@@ -480,14 +482,14 @@
     };
     $('.cnn, .scnn, .num-box').hide();
     $('.d1, .d2, .d3, .d4, .d5').show();
-    // $('.scnn.s5').show();
-    // $('.c1.s5').show();
+
+
     var svg = document.getElementsByTagName('svg')[6];
+
 
     $(document).ready(function () {
         //  When user clicks on tab, this code will be executed
         // var speed = $('#ex21').data('slider').options.value;
-
 
         $("#btn-reset").click(function () {
             $('.cnn, .scnn, .num-box').hide();
@@ -508,10 +510,9 @@
 
         });
 
-//        create_box()
         $("#b1r").click(function () {
             var flag = 0
-            if (client_Connections[1] != -1) {
+            if (client_connections[1] != -1) {
                 console.log('Find connection');
                 // Send read request to c1c
 
@@ -519,29 +520,16 @@
                 //Client is free
                 var list_server = [1, 2, 3, 4, 5];
                 shuffle(list_server);
+
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c1.s' + list_server[i]).show();
-                    client_Connections[1] = list_server[i];
-                    start_Communication_c1(list_server[i], speed, function () {
-                        if (connect_server(client_Connections[1], list_server[i])) {
-                            server_ack_c1(list_server[i], speed, function () {
-//                                delete_box(1)
-//                                delete_box('1ack')
-                                flag = 1
-                            });
-                        } else {
-                            server_Nack();
-                        }
-                    });
-                    if (flag == 1) {
-                        break;
-                    } else {
-                        continue;
-                    }
+
+                    client_connections[1] = list_server[i];
+                    try_connect('c1', 's' + list_server[i]);
+                    break;
+
                 }
             }
-
-
 //                        break;
 //                    } else {
 //                        $('.cnn.c1.s' + list_server[i]).hide(1000);
@@ -551,7 +539,7 @@
         });
 
         $("#b2r").click(function () {
-            if (client_Connections[2] != -1) {
+            if (client_connections[2] != -1) {
                 console.log('Find connection');
                 // Send read request to c1c
 
@@ -561,8 +549,8 @@
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c2.s' + list_server[i]).show();
-                    if (connect_server(client_Connections[2], list_server[i])) {
-                        client_Connections[2] = list_server[i];
+                    if (connect_server(client_connections[2], list_server[i])) {
+                        client_connections[2] = list_server[i];
                         start_Communication_c2(list_server[i], speed);
                         break;
                     } else {
@@ -575,7 +563,7 @@
 
 
         $("#b3r").click(function () {
-            if (client_Connections[3] != -1) {
+            if (client_connections[3] != -1) {
                 console.log('Find connection');
                 // Send read request to c1c
 
@@ -585,8 +573,8 @@
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c3.s' + list_server[i]).show();
-                    if (connect_server(client_Connections[3], list_server[i])) {
-                        client_Connections[3] = list_server[i];
+                    if (connect_server(client_connections[3], list_server[i])) {
+                        client_connections[3] = list_server[i];
                         start_Communication_c3(list_server[i], speed);
                         break;
                     } else {
@@ -631,6 +619,34 @@
     // }
     // moveSpark(200, -200);
 
+    function try_connect(scr, dst) {
+        let path = anime.path('.cnn.' + scr + '.' + dst);
+        let box = create_box(1);
+        let motionPath = anime({
+            targets: box,
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            loop: false,
+            duration: 6000,
+        });
+        var slider = document.getElementsByName('#ex21')
+        motionPath.play()
+
+//         start_Communication_c1(list_server[i], speed, function () {
+//             if (connect_server(client_connections[1], list_server[i])) {
+//                 server_ack_c1(list_server[i], speed, function () {
+// //                            delete_box(1)
+// //                            delete_box('1ack')
+//                     flag = 1
+//                 });
+//             } else {
+//                 server_Nack();
+//             }
+//         });
+
+    }
 
     function start_Communication_c1(server_number, speed, callback) {
         if (server_number == 1) {
@@ -648,8 +664,8 @@
         if (server_number == 5) {
             var path = anime.path('.cnn.c1.s5')
         }
-        var id = 1
-        var box = create_box(id)
+        var id = 1;
+        var box = create_box(id);
 //        var box = document.querySelector('#movingbox');
 //        var distanceX = path('x').t - 30;
 //        path('y').totalLength = path('y').totalLength - 20;
@@ -662,7 +678,7 @@
             loop: false,
             duration: 6000 / speed,
         });
-        var slider = document.getElementsByName('#ex21')
+        var slider = document.getElementsByName('#ex21');
         motionPath.play()
         var complete = anime({
             targets: box,
@@ -680,18 +696,16 @@
 
     function create_box(id) {
         var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-//        var rect = document.createElementNS(svgNS,'rect');
-        rect.setAttribute('x', 45);
-        rect.setAttribute('y', 20);
-        rect.setAttribute('width', 100);
-        rect.setAttribute('height', 35);
+        rect.setAttribute('x', -box_width / 2);
+        rect.setAttribute('y', -box_height / 2);
+        rect.setAttribute('width', box_width);
+        rect.setAttribute('height', box_height);
         rect.setAttribute('fill', 'rgba(5,5,5,0.57)');
         rect.setAttribute('stroke', 'black');
-        rect.setAttribute('stroke-width', 5);
-        rect.setAttribute('opacity', 0.5);
-        rect.setAttribute('id', 'movingbox' + id)
+        rect.setAttribute('stroke-width', '2');
+        rect.setAttribute('opacity', '0.5');
+        rect.setAttribute('id', 'movingbox' + id);
         svg.appendChild(rect);
-//        document.body.appendChild(svg);
         return rect
     }
 
@@ -818,9 +832,9 @@
 
     function connect_server(Cnum, Snum) {
 //        check for existing connections and accept only if free.
-        if (server_Connections[Snum] == -1) {
+        if (server_connections[Snum] == -1) {
             // Server is free
-            server_Connections[Snum] = Cnum;
+            server_connections[Snum] = Cnum;
             console.log(true)
             return true;
         }
