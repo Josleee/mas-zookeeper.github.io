@@ -529,7 +529,7 @@
                     $('.cnn.c1.s' + list_server[i]).show();
 
                     client_connections[1] = list_server[i];
-                    try_connect('c1', 's' + list_server[i]);
+                    setTimeout(reqs_msg('c1', 's' + list_server[i]), 1000);
                     break;
 
                 }
@@ -623,9 +623,9 @@
     // }
     // moveSpark(200, -200);
 
-    function try_connect(scr, dst) {
+    function reqs_msg(scr, dst) {
         let local_id = id;
-        id += 2;
+        id += 1;
 
         let path = anime.path('.cnn.' + scr + '.' + dst);
         let box = create_box(local_id, 'test');
@@ -633,29 +633,34 @@
             targets: box,
             translateX: path('x'),
             translateY: path('y'),
-            delay: 0,
             rotate: path('angle'),
             easing: 'linear',
             loop: 1,
-            duration: 6000,
+            duration: 2000,
             complete: function () {
                 delete_box(local_id);
             }
         });
 
+    }
+
+    function resp_msg(scr, dst) {
+        let local_id = id;
+        id += 1;
+
+        let path = anime.path('.cnn.' + scr + '.' + dst);
         let box2 = create_box(local_id + 1, 'test');
         let motionPath2 = anime({
             targets: box2,
             translateX: path('x'),
             translateY: path('y'),
-            delay: 1000,
             rotate: path('angle'),
             easing: 'linear',
             loop: 1,
-            duration: 6000,
+            duration: 2000,
             direction: 'reverse',
             complete: function () {
-                delete_box(local_id + 1);
+                delete_box(local_id);
             }
         });
     }
