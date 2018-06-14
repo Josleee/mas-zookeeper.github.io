@@ -469,6 +469,7 @@
     let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
     let box_width = 80;
     let box_height = 35;
+    let SENDING_TIME = 2000;
 
     let id = 1;
 
@@ -529,7 +530,8 @@
                     $('.cnn.c1.s' + list_server[i]).show();
 
                     client_connections[1] = list_server[i];
-                    setTimeout(reqs_msg('c1', 's' + list_server[i]), 1000);
+                    setTimeout(function() {reqs_msg('c1', 's' + list_server[i])}, 1000);
+                    setTimeout(function() {resp_msg('c1', 's' + list_server[i])}, 3500);
                     break;
 
                 }
@@ -636,7 +638,7 @@
             rotate: path('angle'),
             easing: 'linear',
             loop: 1,
-            duration: 2000,
+            duration: SENDING_TIME,
             complete: function () {
                 delete_box(local_id);
             }
@@ -649,7 +651,7 @@
         id += 1;
 
         let path = anime.path('.cnn.' + scr + '.' + dst);
-        let box2 = create_box(local_id + 1, 'test');
+        let box2 = create_box(local_id, 'test');
         let motionPath2 = anime({
             targets: box2,
             translateX: path('x'),
@@ -657,7 +659,7 @@
             rotate: path('angle'),
             easing: 'linear',
             loop: 1,
-            duration: 2000,
+            duration: SENDING_TIME,
             direction: 'reverse',
             complete: function () {
                 delete_box(local_id);
