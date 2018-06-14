@@ -428,6 +428,7 @@
 <script src="assets/js/popper.min.js"></script>
 <script src="assets/js/bootstrap-slider.min.js"></script>
 <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-slider.min.css">
+<link rel="stylesheet" type="text/css" href="assets/css/main.css">
 
 <!-- Icons -->
 <script src="assets/js/feather.min.js"></script>
@@ -621,7 +622,7 @@
 
     function try_connect(scr, dst) {
         let path = anime.path('.cnn.' + scr + '.' + dst);
-        let box = create_box(1);
+        let box = create_box(1, 'test');
         let motionPath = anime({
             targets: box,
             translateX: path('x'),
@@ -670,7 +671,7 @@
 //        var distanceX = path('x').t - 30;
 //        path('y').totalLength = path('y').totalLength - 20;
         var motionPath = anime({
-            targets: box,
+            targets: '#text1, #movingbox1',
             translateX: path('x'),
             translateY: path('y'),
             rotate: path('angle'),
@@ -694,19 +695,33 @@
         $("#movingbox" + id).remove();
     }
 
-    function create_box(id) {
-        var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+    function create_box(id, ctn) {
+        let rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
         rect.setAttribute('x', -box_width / 2);
         rect.setAttribute('y', -box_height / 2);
         rect.setAttribute('width', box_width);
         rect.setAttribute('height', box_height);
-        rect.setAttribute('fill', 'rgba(5,5,5,0.57)');
-        rect.setAttribute('stroke', 'black');
-        rect.setAttribute('stroke-width', '2');
-        rect.setAttribute('opacity', '0.5');
+        rect.setAttribute('fill', 'rgba(121,121,121,1)');
+        rect.setAttribute('stroke-width', '0');
+        rect.setAttribute('opacity', '1');
         rect.setAttribute('id', 'movingbox' + id);
+
+        let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        text.setAttribute('x', -box_width / 3);
+        text.setAttribute('y', box_height / 5);
+        text.setAttribute('width', box_width);
+        text.setAttribute('height', box_height);
+        text.setAttribute('fill', 'rgba(255,255,255,1)');
+        text.setAttribute('stroke-width', '0');
+        text.setAttribute('class', 'textbox');
+        text.setAttribute('opacity', '1');
+        text.setAttribute('id', 'textbox' + id);
+        text.innerHTML = ctn;
+
         svg.appendChild(rect);
-        return rect
+        svg.appendChild(text);
+
+        return [rect, text]
     }
 
     function start_Communication_c2(server_number, speed) {
