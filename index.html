@@ -67,7 +67,7 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="main-content" id="tab1">
+            <div class="main-content" id="tab1" style="display: none;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Introduction</h1>
@@ -122,7 +122,7 @@
                 </div>
             </div>
 
-            <div class="main-content" id="tab3" style="display: none;">
+            <div class="main-content" id="tab3">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Application</h1>
@@ -133,15 +133,18 @@
                     <button id="btn-init" type="button" class="btn btn-outline-secondary">Initialize</button>
                     <button id="btn-reset" type="button" class="btn btn-outline-secondary">Reset system</button>
 
-                    <input id="ex21" type="text"
-                           data-provide="slider"
-                           data-slider-ticks="[1, 2, 3]"
-                           data-slider-ticks-labels='["slow", "medium", "fast"]'
-                           data-slider-min="1"
-                           data-slider-max="3"
-                           data-slider-step="1"
-                           data-slider-value="2"
-                           data-slider-tooltip="hide"/>
+
+                    <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
+
+                    <!--<input id="ex21" type="text"-->
+                    <!--data-provide="slider"-->
+                    <!--data-slider-ticks="[1, 2, 3]"-->
+                    <!--data-slider-ticks-labels='["slow", "medium", "fast"]'-->
+                    <!--data-slider-min="1"-->
+                    <!--data-slider-max="3"-->
+                    <!--data-slider-step="1"-->
+                    <!--data-slider-value="2"-->
+                    <!--data-slider-tooltip="hide"/>-->
                 </div>
 
                 <button id="btn-speed" type="button" class="btn btn-outline-secondary">Set speed</button>
@@ -457,7 +460,6 @@
             return false;
         });
     });
-
 </script>
 
 <script src="assets/js/anime.min.js"></script>
@@ -468,7 +470,7 @@
         1: -1,
         2: -1,
         3: -1,
-    }
+    };
     var server_Connections = {
         1: -1,
         2: -1,
@@ -484,18 +486,20 @@
 
     $(document).ready(function () {
         //  When user clicks on tab, this code will be executed
-        var speed = $('#ex21').data('slider').options.value;
+        // var speed = $('#ex21').data('slider').options.value;
+
+
         $("#btn-reset").click(function () {
             $('.cnn, .scnn, .num-box').hide();
             $('.d1, .d2, .d3, .d4, .d5').show();
             le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
             $('.scnn').css('stroke', 'grey');
         });
+
         $("#btn-init").click(function () {
             shuffle(le);
             for (let i = 0; i < 5; i++) {
                 $('#ns' + (i + 1)).text(le[i]);
-
             }
 
             l_le = analyse_label();
@@ -503,6 +507,7 @@
             $('.num-box').fadeIn(2000);
 
         });
+
 //        create_box()
         $("#b1r").click(function () {
             var flag = 0
@@ -519,11 +524,11 @@
                     client_Connections[1] = list_server[i];
                     start_Communication_c1(list_server[i], speed, function () {
                         if (connect_server(client_Connections[1], list_server[i])) {
-                                server_ack_c1(list_server[i], speed, function () {
+                            server_ack_c1(list_server[i], speed, function () {
 //                                delete_box(1)
 //                                delete_box('1ack')
-                                    flag = 1
-                                });
+                                flag = 1
+                            });
                         } else {
                             server_Nack();
                         }
@@ -555,10 +560,10 @@
                 var list_server = [1, 2, 3, 4, 5];
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c2.s' + list_server[i]).show();
+                    $('.cnn.c2.s' + list_server[i]).show();
                     if (connect_server(client_Connections[2], list_server[i])) {
-                client_Connections[2] = list_server[i];
-                start_Communication_c2(list_server[i], speed);
+                        client_Connections[2] = list_server[i];
+                        start_Communication_c2(list_server[i], speed);
                         break;
                     } else {
                         $('.cnn.c2.s' + list_server[i]).hide(1000);
@@ -579,10 +584,10 @@
                 var list_server = [1, 2, 3, 4, 5];
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c3.s' + list_server[i]).show();
+                    $('.cnn.c3.s' + list_server[i]).show();
                     if (connect_server(client_Connections[3], list_server[i])) {
-                client_Connections[3] = list_server[i];
-                start_Communication_c3(list_server[i], speed);
+                        client_Connections[3] = list_server[i];
+                        start_Communication_c3(list_server[i], speed);
                         break;
                     } else {
                         $('.cnn.c3.s' + list_server[i]).hide(1000);
