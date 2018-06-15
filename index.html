@@ -470,7 +470,7 @@
     let box_width = 80;
     let box_height = 35;
     let SENDING_TIME = 2500;
-
+    let leader = -1;
     let id = 1;
 
     let l_le = [];
@@ -508,8 +508,8 @@
             for (let i = 0; i < 5; i++) {
                 $('#ns' + (i + 1)).text(le[i]);
             }
-
             l_le = analyse_label();
+            leader = l_le[0];
             $('.scnn.s' + l_le[0]).fadeIn(2000);
             $('.num-box').fadeIn(2000);
 
@@ -536,14 +536,11 @@
                     if (connect_server(1, list_server[i])) {
                         client_connections[1] = list_server[i];
                         setTimeout(function () {
-                            reqs_msg('c1', 's' + list_server[i], 'Con?')
-                        }, 1000);
-                        setTimeout(function () {
                             resp_msg('c1', 's' + list_server[i], 'Ack')
                         }, 3500);
                         //Request for the data
                         setTimeout(function () {
-                            reqs_msg('c1', 's' + list_server[i], 'Data')
+                            reqs_msg('c1', 's' + list_server[i], 'READ')
                         }, 7000);
                         //Talk to the database
                         setTimeout(function () {
@@ -557,13 +554,12 @@
                         setTimeout(function () {
                             $('.cnn.' + 'c1' + '.' + 's' + list_server[i]).hide()
                         }, 20000);
+                        client_connections[1] = -1;
                         break;
                     }
                     else {
                         client_connections[1] = -1;
                         resp_msg('c1', 's' + list_server[i], 'NAck')
-                        setTimeout(function () {
-                        }, 3000)
                         continue;
                     }
                 }
@@ -592,7 +588,7 @@
                         }, 3500);
                         //Request for the data
                         setTimeout(function () {
-                            reqs_msg('c2', 's' + list_server[i], 'Data')
+                            reqs_msg('c2', 's' + list_server[i], 'READ')
                         }, 7000);
                         //Talk to the database
                         setTimeout(function () {
@@ -605,6 +601,7 @@
                         // Close the connections
                         setTimeout(function () {
                             $('.cnn.' + 'c2' + '.' + 's' + list_server[i]).hide()
+                            client_connections[2] = -1;
                         }, 20000);
                         break;
                     } else {
@@ -640,7 +637,7 @@
 
                         //Request for the data
                         setTimeout(function () {
-                            reqs_msg('c3', 's' + list_server[i], 'Data')
+                            reqs_msg('c3', 's' + list_server[i], 'READ')
                         }, 7000);
                         //Talk to the database
                         setTimeout(function () {
@@ -653,6 +650,7 @@
                         // Close the connections
                         setTimeout(function () {
                             $('.cnn.' + 'c3' + '.' + 's' + list_server[i]).hide()
+                            client_connections[3] = -1;
                         }, 20000);
                         break;
                     } else {
@@ -664,14 +662,60 @@
                 }
             }
         });
+
+        $("#b1w").click(function () {
+            if (client_connections[1] != -1) {
+                console.log('Find connection');
+                // Send read request to c1c
+
+            } else {
+                // Client is free
+                let list_server = [1, 2, 3, 4, 5];
+                shuffle(list_server);
+                for (let i = 0; i < list_server.length; i++) {
+                    $('.cnn.c1.s' + list_server[i]).show();
+                    if (connect_server(1, list_server[i])) {
+                        client_connections[1] = list_server[i];
+                        setTimeout(function () {
+                            reqs_msg('c1', 's' + list_server[i], 'Con?')
+                        }, 1000);
+                        setTimeout(function () {
+                            resp_msg('c1', 's' + list_server[i], 'Ack')
+                        }, 3500);
+                        setTimeout(function () {
+                            reqs_msg('c1', 's' + list_server[i], 'WRITE')
+                        }, 7000);
+                        //Talk to the Leader
+                        if(list_server[i] != leader) {
+                            setTimeout(function () {
+                                talk_to_Leader('s' + list_server[i], 'WRITE')
+                            }, 10500);
+                        }
+                        //leader Broadcast
+                        setTimeout(function () {
+                            leader_broadcast(list_server, 'WRITE')
+                        }, 14500);
+                        //server replies
+                        //leader checks if sufficient server reply back
+                        //if above true, then server broadcasts the write command
+                        //all servers write data to the database
+                        //
+                        break;
+                    } else {
+                        // server is busy, select another one
+                        continue;
+                    }
+                }
+            }
+
+        });
         // With JQuery
         $("#ex21").slider();
         $('#btn-speed').on("click", function () {
             speed = $('#ex21').data('slider').options.value;
             console.log(speed)
         });
-    })
-    ;
+    });
 
 
     function reqs_msg(scr, dst, message) {
@@ -791,6 +835,67 @@
                 delete_box(local_id);
             }
         });
+    }
+
+    function talk_to_Leader(Snum, message) {
+        let local_id = id;
+        id += 1;
+        if (leader != -1) { // Do this only if there is a valid leader elected
+            let path = anime.path('.scnn.' + Snum + '.s' + leader);
+            let box = create_box(local_id, message);
+            let motionPath = anime({
+                targets: box,
+                translateX: path('x'),
+                translateY: path('y'),
+                rotate: path('angle'),
+                easing: 'linear',
+                loop: 1,
+                duration: SENDING_TIME,
+//                direction: 'reverse',
+                complete: function () {
+                    delete_box(local_id);
+                }
+            });
+        } else {
+            // There is no valid Leader
+            console.log("Press Initialize!!!")
+        }
+    }
+
+    function leader_to_others(Snum, message) {
+        let local_id = id;
+        id += 1;
+        if (leader != -1) { // Do this only if there is a valid leader elected
+            console.log('.scnn.' + Snum + '.s' + leader)
+            let path = anime.path('.scnn.' + Snum + '.s' + leader);
+            let box = create_box(local_id, message);
+            let motionPath = anime({
+                targets: box,
+                translateX: path('x'),
+                translateY: path('y'),
+                rotate: path('angle'),
+                easing: 'linear',
+                loop: 1,
+                direction : 'reverse',
+                duration: SENDING_TIME,
+                complete: function () {
+                    delete_box(local_id);
+                }
+            });
+        } else {
+            // There is no valid Leader
+            console.log("Press Initialize!!!")
+        }
+    }
+
+    function leader_broadcast(Snums, message) {
+        // This method is for all types of broadcasts
+        let count = 1;
+        for (let i = 0; i < Snums.length; i++) {
+            if (Snums[i] != leader) {
+                leader_to_others('s' + Snums[i], 'WRITE');
+            }
+        }
     }
 
     function analyse_label() {
