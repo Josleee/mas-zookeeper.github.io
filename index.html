@@ -469,7 +469,7 @@
     let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
     let box_width = 80;
     let box_height = 35;
-    let SENDING_TIME = 2000;
+    let SENDING_TIME = 4000;
 
     let id = 1;
 
@@ -526,22 +526,36 @@
                 let list_server = [1, 2, 3, 4, 5];
                 shuffle(list_server);
 
+
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c1.s' + list_server[i]).show();
-
                     client_connections[1] = list_server[i];
-                    setTimeout(function() {reqs_msg('c1', 's' + list_server[i])}, 1000);
-                    setTimeout(function() {resp_msg('c1', 's' + list_server[i])}, 3500);
-                    break;
-
+                    setTimeout(function () {
+                        reqs_msg('c1', 's' + list_server[i], 'Con?')
+                    }, 1000);
+                    if (connect_server(1, list_server[i])) {
+                        client_connections[1] = list_server[i];
+                        setTimeout(function () {
+                            reqs_msg('c1', 's' + list_server[i], 'Con?')
+                        }, 1000);
+                        setTimeout(function () {
+                            resp_msg('c1', 's' + list_server[i], 'Ack')
+                        }, 3500);
+                        //Talk to the database
+                        setTimeout(function () {
+                            reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
+                        }, 9500);
+                        break;
+                    }
+                    else {
+                        client_connections[1] = -1;
+                        resp_msg('c1', 's' + list_server[i], 'NAck')
+                        setTimeout(function () {
+                        }, 3000)
+                        continue;
+                    }
                 }
             }
-//                        break;
-//                    } else {
-//                        $('.cnn.c1.s' + list_server[i]).hide(1000);
-//                        continue;
-//                    }
-
         });
 
         $("#b2r").click(function () {
@@ -555,12 +569,21 @@
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c2.s' + list_server[i]).show();
-                    if (connect_server(client_connections[2], list_server[i])) {
-                        client_connections[2] = list_server[i];
-                        start_Communication_c2(list_server[i], speed);
+                    client_connections[2] = list_server[i];
+                    setTimeout(function () {
+                        reqs_msg('c2', 's' + list_server[i], 'Con?')
+                    }, 1000);
+                    if (connect_server(2, list_server[i])) {
+
+                        setTimeout(function () {
+                            resp_msg('c2', 's' + list_server[i], 'Ack')
+                        }, 3500);
+                        // Talk to the database
                         break;
                     } else {
-                        $('.cnn.c2.s' + list_server[i]).hide(1000);
+                        //send nack
+                        client_connections[2] = -1;
+                        resp_msg('c2', 's' + list_server[i], 'NAck')
                         continue;
                     }
                 }
@@ -579,12 +602,20 @@
                 shuffle(list_server);
                 for (let i = 0; i < list_server.length; i++) {
                     $('.cnn.c3.s' + list_server[i]).show();
-                    if (connect_server(client_connections[3], list_server[i])) {
+                    if (connect_server(3, list_server[i])) {
                         client_connections[3] = list_server[i];
-                        start_Communication_c3(list_server[i], speed);
+                        setTimeout(function () {
+                            reqs_msg('c3', 's' + list_server[i], 'Con?')
+                        }, 1000);
+                        setTimeout(function () {
+                            resp_msg('c3', 's' + list_server[i], 'Ack')
+                        }, 3500);
+                        //Send Heartbeats
                         break;
                     } else {
-                        $('.cnn.c3.s' + list_server[i]).hide(1000);
+                        //negative ack
+                        client_connections[3] = -1;
+                        resp_msg('c3', 's' + list_server[i], 'NAck')
                         continue;
                     }
                 }
@@ -598,39 +629,14 @@
         });
     })
     ;
-    // anime({
-    //     targets: 'div#tab5',
-    //     translateX: [
-    //         {value: 100, duration: 1200},
-    //         {value: 0, duration: 800}
-    //     ],
-    //     rotate: '1turn',
-    //     backgroundColor: '#FFF',
-    //     duration: 2000,
-    //     loop: true
-    // });
 
-    // function moveSpark(pX, pY) {
-    //     let el = document.querySelector('#spark');
-    //     $(el).show();
-    //
-    //     let domNode = anime({
-    //         targets: el,
-    //         rotate: '1turn',
-    //         duration: 3000,
-    //         translateX: pX,
-    //         translateY: pY
-    //     });
-    //     // $(el).show(0).delay(2000).hide(0);
-    // }
-    // moveSpark(200, -200);
 
-    function reqs_msg(scr, dst) {
+    function reqs_msg(scr, dst, message) {
         let local_id = id;
         id += 1;
-
+        console.log('.cnn.' + scr + '.' + dst)
         let path = anime.path('.cnn.' + scr + '.' + dst);
-        let box = create_box(local_id, 'test');
+        let box = create_box(local_id, message);
         let motionPath = anime({
             targets: box,
             translateX: path('x'),
@@ -646,12 +652,12 @@
 
     }
 
-    function resp_msg(scr, dst) {
+    function resp_msg(scr, dst, message) {
         let local_id = id;
         id += 1;
 
         let path = anime.path('.cnn.' + scr + '.' + dst);
-        let box2 = create_box(local_id, 'test');
+        let box2 = create_box(local_id, message);
         let motionPath2 = anime({
             targets: box2,
             translateX: path('x'),
@@ -663,51 +669,18 @@
             direction: 'reverse',
             complete: function () {
                 delete_box(local_id);
+                if (message != 'NAck') {
+                    (function () {
+                        heartbeats(scr, dst, 'Alive')
+                        setTimeout(arguments.callee, 6000);
+                    })();
+                } else {
+                    $('.cnn.' + scr + '.' + dst).hide()
+                }
             }
         });
     }
 
-    function start_Communication_c1(server_number, speed, callback) {
-        if (server_number == 1) {
-            let path = anime.path('.cnn.c1.s1')
-        }
-        if (server_number == 2) {
-            let path = anime.path('.cnn.c1.s2')
-        }
-        if (server_number == 3) {
-            let path = anime.path('.cnn.c1.s3')
-        }
-        if (server_number == 4) {
-            let path = anime.path('.cnn.c1.s4')
-        }
-        if (server_number == 5) {
-            let path = anime.path('.cnn.c1.s5')
-        }
-        let id = 1;
-        let box = create_box(id);
-//        let box = document.querySelector('#movingbox');
-//        let distanceX = path('x').t - 30;
-//        path('y').totalLength = path('y').totalLength - 20;
-        let motionPath = anime({
-            targets: '#text1, #movingbox1',
-            translateX: path('x'),
-            translateY: path('y'),
-            rotate: path('angle'),
-            easing: 'linear',
-            loop: false,
-            duration: 6000 / speed,
-        });
-        let slider = document.getElementsByName('#ex21');
-        motionPath.play()
-        let complete = anime({
-            targets: box,
-            delay: 600 * speed,
-            complete: function (anim) {
-                $('#movingbox' + id).hide()
-            }
-        });
-        callback()
-    }
 
     function delete_box(id) {
         $("#movingbox" + id).remove();
@@ -743,127 +716,6 @@
         return [rect, text]
     }
 
-    function start_Communication_c2(server_number, speed) {
-        if (server_number == 1) {
-            let path = anime.path('.cnn.c2.s1')
-        }
-        if (server_number == 2) {
-            let path = anime.path('.cnn.c2.s2')
-        }
-        if (server_number == 3) {
-            let path = anime.path('.cnn.c2.s3')
-        }
-        if (server_number == 4) {
-            let path = anime.path('.cnn.c2.s4')
-        }
-        if (server_number == 5) {
-            let path = anime.path('.cnn.c2.s5')
-        }
-        let id = 2
-        let box = create_box(id)
-//        let distanceX = path('x').t - 30;
-//        path('y').totalLength = path('y').totalLength - 20;
-        let motionPath = anime({
-            targets: box,
-            translateX: path('x'),
-            translateY: path('y'),
-            rotate: path('angle'),
-            easing: 'linear',
-            loop: false,
-            duration: 6000 / speed,
-        });
-        let slider = document.getElementsByName('#ex21')
-        motionPath.play()
-        let complete = anime({
-            targets: box,
-            delay: 600 * speed,
-            complete: function (anim) {
-                $('#movingbox' + id).hide()
-            }
-        });
-    }
-
-    function start_Communication_c3(server_number, speed) {
-        if (server_number == 1) {
-            let path = anime.path('.cnn.c3.s1')
-        }
-        if (server_number == 2) {
-            let path = anime.path('.cnn.c3.s2')
-        }
-        if (server_number == 3) {
-            let path = anime.path('.cnn.c3.s3')
-        }
-        if (server_number == 4) {
-            let path = anime.path('.cnn.c3.s4')
-        }
-        if (server_number == 5) {
-            let path = anime.path('.cnn.c3.s5')
-        }
-        let id = 3;
-        let box = create_box(id)
-//        let distanceX = path('x').t - 30;
-//        path('y').totalLength = path('y').totalLength - 20;
-        let motionPath = anime({
-            targets: box,
-            translateX: path('x'),
-            translateY: path('y'),
-            rotate: path('angle'),
-            easing: 'linear',
-            loop: false,
-            duration: 6000 / speed,
-        });
-        let slider = document.getElementsByName('#ex21')
-        motionPath.play()
-        let complete = anime({
-            targets: box,
-            delay: 600 * speed,
-            complete: function (anim) {
-                $('#movingbox' + id).hide()
-            }
-        });
-    }
-
-    function server_ack_c1(server_number, speed, callback) {
-
-        if (server_number == 1) {
-            let path = anime.path('.cnn.c1.s1')
-        }
-        if (server_number == 2) {
-            let path = anime.path('.cnn.c1.s2')
-        }
-        if (server_number == 3) {
-            let path = anime.path('.cnn.c1.s3')
-        }
-        if (server_number == 4) {
-            let path = anime.path('.cnn.c1.s4')
-        }
-        if (server_number == 5) {
-            let path = anime.path('.cnn.c1.s5')
-        }
-        console.log(path('x'))
-        let id = '1ack';
-        let box = create_box(id)
-        let reverse = anime({
-            targets: box,
-            translateX: path('x'),
-            translateY: path('y'),
-            rotate: path('angle'),
-            direction: 'reverse',
-            easing: 'linear',
-            duration: 6000 / speed,
-        });
-        let slider = document.getElementsByName('#ex21')
-        reverse.play()
-        let complete = anime({
-            targets: box,
-            delay: 600 * speed,
-            complete: function (anim) {
-                $('#movingbox' + id).hide()
-            }
-        });
-        callback()
-    }
-
     function connect_server(Cnum, Snum) {
 //        check for existing connections and accept only if free.
         if (server_connections[Snum] == -1) {
@@ -879,6 +731,24 @@
         }
     }
 
+    function heartbeats(scr, dst, message) {
+        let local_id = id;
+        id += 1;
+        let path = anime.path('.cnn.' + scr + '.' + dst);
+        let box = create_box(local_id, message);
+        let motionPath = anime({
+            targets: box,
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            loop: 1,
+            duration: SENDING_TIME,
+            complete: function () {
+                delete_box(local_id);
+            }
+        });
+    }
 
     function analyse_label() {
         let tmp = [];
