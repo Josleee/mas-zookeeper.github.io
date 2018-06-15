@@ -280,9 +280,9 @@
                               d="M760 70 L970 70 Z"></path>
                         <path class="s2 d2 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M760 180 L970 180 Z"></path>
-                        <path class="s2 d3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                        <path class="s3 d3 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M760 290 L970 290 Z"></path>
-                        <path class="s2 d4 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
+                        <path class="s4 d4 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M760 400 L970 400 Z"></path>
                         <path class="s5 d5 cnn" stroke="rgb(150,150,150)" stroke-width="2px"
                               d="M760 510 L970 510 Z"></path>
@@ -469,7 +469,7 @@
     let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
     let box_width = 80;
     let box_height = 35;
-    let SENDING_TIME = 4000;
+    let SENDING_TIME = 2500;
 
     let id = 1;
 
@@ -541,10 +541,22 @@
                         setTimeout(function () {
                             resp_msg('c1', 's' + list_server[i], 'Ack')
                         }, 3500);
+                        //Request for the data
+                        setTimeout(function () {
+                            reqs_msg('c1', 's' + list_server[i], 'Data')
+                        }, 7000);
                         //Talk to the database
                         setTimeout(function () {
                             reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
-                        }, 9500);
+                        }, 12000);
+
+                        setTimeout(function () {
+                            resp_msg('c1', 's' + list_server[i], 'Done')
+                        }, 15500);
+                        // Close the connections
+                        setTimeout(function () {
+                            $('.cnn.' + 'c1' + '.' + 's' + list_server[i]).hide()
+                        }, 20000);
                         break;
                     }
                     else {
@@ -578,7 +590,22 @@
                         setTimeout(function () {
                             resp_msg('c2', 's' + list_server[i], 'Ack')
                         }, 3500);
-                        // Talk to the database
+                        //Request for the data
+                        setTimeout(function () {
+                            reqs_msg('c2', 's' + list_server[i], 'Data')
+                        }, 7000);
+                        //Talk to the database
+                        setTimeout(function () {
+                            reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
+                        }, 12000);
+
+                        setTimeout(function () {
+                            resp_msg('c2', 's' + list_server[i], 'Done')
+                        }, 15500);
+                        // Close the connections
+                        setTimeout(function () {
+                            $('.cnn.' + 'c2' + '.' + 's' + list_server[i]).hide()
+                        }, 20000);
                         break;
                     } else {
                         //send nack
@@ -610,7 +637,23 @@
                         setTimeout(function () {
                             resp_msg('c3', 's' + list_server[i], 'Ack')
                         }, 3500);
-                        //Send Heartbeats
+
+                        //Request for the data
+                        setTimeout(function () {
+                            reqs_msg('c3', 's' + list_server[i], 'Data')
+                        }, 7000);
+                        //Talk to the database
+                        setTimeout(function () {
+                            reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
+                        }, 12000);
+
+                        setTimeout(function () {
+                            resp_msg('c3', 's' + list_server[i], 'Done')
+                        }, 15500);
+                        // Close the connections
+                        setTimeout(function () {
+                            $('.cnn.' + 'c3' + '.' + 's' + list_server[i]).hide()
+                        }, 20000);
                         break;
                     } else {
                         //negative ack
@@ -634,7 +677,7 @@
     function reqs_msg(scr, dst, message) {
         let local_id = id;
         id += 1;
-        console.log('.cnn.' + scr + '.' + dst)
+        console.log('.cnn.' + scr + '.' + dst + ':::' + message)
         let path = anime.path('.cnn.' + scr + '.' + dst);
         let box = create_box(local_id, message);
         let motionPath = anime({
@@ -669,13 +712,13 @@
             direction: 'reverse',
             complete: function () {
                 delete_box(local_id);
-                if (message != 'NAck') {
+                if (message != 'NAck' && message != 'Done') {
                     (function () {
                         heartbeats(scr, dst, 'Alive')
-                        setTimeout(arguments.callee, 6000);
+                        myVar = setTimeout(arguments.callee, 5500);
                     })();
                 } else {
-                    $('.cnn.' + scr + '.' + dst).hide()
+                    clearTimeout(myVar);
                 }
             }
         });
