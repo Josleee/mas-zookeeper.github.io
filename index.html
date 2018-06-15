@@ -686,16 +686,19 @@
                             reqs_msg('c1', 's' + list_server[i], 'WRITE')
                         }, 7000);
                         //Talk to the Leader
-                        if(list_server[i] != leader) {
+                        if (list_server[i] != leader) {
                             setTimeout(function () {
-                                talk_to_Leader('s' + list_server[i], 'WRITE')
+                                server_talk('s' + list_server[i],'reverse', 'WRITE')
                             }, 10500);
                         }
                         //leader Broadcast
                         setTimeout(function () {
-                            leader_broadcast(list_server, 'WRITE')
-                        }, 14500);
-                        //server replies
+                            leader_broadcast(list_server,'WRITE')
+                        }, 13500);
+                        //server acks
+                        setTimeout(function () {
+                            leader_broadcast(list_server,'Ack')
+                        }, 18500);
                         //leader checks if sufficient server reply back
                         //if above true, then server broadcasts the write command
                         //all servers write data to the database
@@ -713,7 +716,7 @@
         $("#ex21").slider();
         $('#btn-speed').on("click", function () {
             speed = $('#ex21').data('slider').options.value;
-            console.log(speed)
+//            console.log(speed)
         });
     });
 
@@ -721,7 +724,6 @@
     function reqs_msg(scr, dst, message) {
         let local_id = id;
         id += 1;
-        console.log('.cnn.' + scr + '.' + dst + ':::' + message)
         let path = anime.path('.cnn.' + scr + '.' + dst);
         let box = create_box(local_id, message);
         let motionPath = anime({
@@ -808,12 +810,10 @@
         if (server_connections[Snum] == -1) {
             // Server is free
             server_connections[Snum] = Cnum;
-            console.log(true)
             return true;
         }
         else {
             //Server is busy
-            console.log(false)
             return false
         }
     }
@@ -837,10 +837,12 @@
         });
     }
 
-    function talk_to_Leader(Snum, message) {
+    function server_talk(Snum,direction, message) {
         let local_id = id;
         id += 1;
         if (leader != -1) { // Do this only if there is a valid leader elected
+            console.log("in talk to leader")
+            console.log('.scnn.' + Snum + '.s' + leader)
             let path = anime.path('.scnn.' + Snum + '.s' + leader);
             let box = create_box(local_id, message);
             let motionPath = anime({
@@ -850,6 +852,7 @@
                 rotate: path('angle'),
                 easing: 'linear',
                 loop: 1,
+                direction:direction,
                 duration: SENDING_TIME,
 //                direction: 'reverse',
                 complete: function () {
@@ -862,38 +865,21 @@
         }
     }
 
-    function leader_to_others(Snum, message) {
-        let local_id = id;
-        id += 1;
-        if (leader != -1) { // Do this only if there is a valid leader elected
-            console.log('.scnn.' + Snum + '.s' + leader)
-            let path = anime.path('.scnn.' + Snum + '.s' + leader);
-            let box = create_box(local_id, message);
-            let motionPath = anime({
-                targets: box,
-                translateX: path('x'),
-                translateY: path('y'),
-                rotate: path('angle'),
-                easing: 'linear',
-                loop: 1,
-                direction : 'reverse',
-                duration: SENDING_TIME,
-                complete: function () {
-                    delete_box(local_id);
-                }
-            });
-        } else {
-            // There is no valid Leader
-            console.log("Press Initialize!!!")
-        }
-    }
-
-    function leader_broadcast(Snums, message) {
+//
+    function leader_broadcast(Snums,message) {
         // This method is for all types of broadcasts
         let count = 1;
         for (let i = 0; i < Snums.length; i++) {
+            //Server check the database
+            setTimeout(function () {
+                reqs_msg('s' + Snums[i], 'd' + Snums[i], 'Data')
+            }, 16000);
             if (Snums[i] != leader) {
-                leader_to_others('s' + Snums[i], 'WRITE');
+                if (message == 'WRITE') {
+                    server_talk('s' + Snums[i],'normal', message);
+                } else if (message == 'Ack') {
+                    server_talk('s' + Snums[i],'reverse', message)
+                }
             }
         }
     }
