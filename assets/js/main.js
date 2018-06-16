@@ -333,6 +333,36 @@ function leader_broadcast(Snums, message) {
     }
 }
 
+function write_reqs(scr, dst) {
+    setTimeout(function () {
+        reqs_msg(scr, dst, 'write_req')
+    }, 0);
+
+    setTimeout(function () {
+        reqs_msg(dst, 'd' + dst.slice(-1), 'hb_req')
+    }, SENDING_TIME + WAITING_TIME);
+
+}
+
+function heart_beat(scr, dst) {
+    setTimeout(function () {
+        reqs_msg(scr, dst, 'hb_req')
+    }, 0);
+
+    setTimeout(function () {
+        reqs_msg(dst, 'd' + dst.slice(-1), 'hb_req')
+    }, SENDING_TIME + WAITING_TIME);
+
+    setTimeout(function () {
+        resp_msg(dst, 'd' + dst.slice(-1), 'hb_ack')
+    }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+    setTimeout(function () {
+        resp_msg(scr, dst, 'hb_ack')
+    }, SENDING_TIME * 3 + WAITING_TIME * 3);
+
+    return SENDING_TIME * 4 + WAITING_TIME * 4;
+}
 
 function connect_reqs(scr, dst) {
     setTimeout(function () {
