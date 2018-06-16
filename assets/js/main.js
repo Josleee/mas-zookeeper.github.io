@@ -65,20 +65,19 @@ $(document).ready(function () {
                 client_connections[1] = list_server[i];
 
                 // (function () {
-                    // reqs_msg('c1', 's1', 'Alive');
-                    // myVar = setTimeout(arguments.callee, 5500);
-                    // setTimeout(function () {
-                    //     reqs_msg('c1', 's1', 'Alive');
-                    // }, 3500);
-                    // setInterval(function, 60000);
-                // })();
+                // reqs_msg('c1', 's1', 'Alive');
+                // myVar = setTimeout(arguments.callee, 5500);
                 // setTimeout(function () {
                 //     reqs_msg('c1', 's1', 'Alive');
-                // }, 500);
-                // setInterval(function () {
-                //     reqs_msg('c1', 's1', 'Alive');
-                // }, 10000);
-                read_reqs('c1', 's' + list_server[i]);
+                // }, 3500);
+                // setInterval(function, 60000);
+                // })();
+
+                let running_time = connect_reqs('c1', 's' + list_server[i]);
+                setTimeout(function () {
+                    read_reqs('c1', 's' + list_server[i]);
+                }, running_time);
+
                 break;
 
                 // setTimeout(function () {
@@ -266,28 +265,6 @@ $(document).ready(function () {
 });
 
 
-function read_reqs(scr, dst) {
-    // Send request
-    setTimeout(function () {
-        reqs_msg(scr, dst, 'read_req')
-    }, 0);
-
-    setTimeout(function () {
-        reqs_msg(dst, 'd' + dst.slice(-1), 'read_ack')
-    }, SENDING_TIME + WAITING_TIME);
-
-    setTimeout(function () {
-        resp_msg(dst, 'd' + dst.slice(-1), 'data')
-    }, SENDING_TIME * 2 + WAITING_TIME * 2);
-
-    // setTimeout(function () {
-    //     resp_msg(scr, dst, 'read_ack')
-    // }, SENDING_TIME + WAITING_TIME);
-
-
-}
-
-
 // if (message != 'NAck' && message != 'Done') {
 //     (function () {
 //         heartbeats(scr, dst, 'Alive')
@@ -338,12 +315,6 @@ function server_talk(Snum, direction, message) {
     }
 }
 
-
-
-
-
-
-
 function leader_broadcast(Snums, message) {
     // This method is for all types of broadcasts
     let count = 1;
@@ -360,6 +331,39 @@ function leader_broadcast(Snums, message) {
             }
         }
     }
+}
+
+
+function connect_reqs(scr, dst) {
+    setTimeout(function () {
+        reqs_msg(scr, dst, 'conn_req')
+    }, 0);
+
+    setTimeout(function () {
+        resp_msg(scr, dst, 'conn_ack')
+    }, SENDING_TIME + WAITING_TIME);
+
+    return SENDING_TIME * 2 + WAITING_TIME * 2;
+}
+
+function read_reqs(scr, dst) {
+    setTimeout(function () {
+        reqs_msg(scr, dst, 'read_req')
+    }, 0);
+
+    setTimeout(function () {
+        reqs_msg(dst, 'd' + dst.slice(-1), 'read_ack')
+    }, SENDING_TIME + WAITING_TIME);
+
+    setTimeout(function () {
+        resp_msg(dst, 'd' + dst.slice(-1), 'data')
+    }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+    setTimeout(function () {
+        resp_msg(scr, dst, 'data')
+    }, SENDING_TIME * 3 + WAITING_TIME * 3);
+
+    return SENDING_TIME * 4 + WAITING_TIME * 4;
 }
 
 function create_box(id, ctn) {
@@ -400,7 +404,7 @@ function reqs_msg(scr, dst, message) {
     let local_id = id;
     id += 1;
 
-    let path = anime.path('.' + scr + '.' + dst);
+    let path = anime.path('.' + scr + '.' + dst + '.fo');
     let box = create_box(local_id, message);
     let motionPath = anime({
         targets: box,
@@ -420,7 +424,7 @@ function resp_msg(scr, dst, message) {
     let local_id = id;
     id += 1;
 
-    let path = anime.path('.' + scr + '.' + dst);
+    let path = anime.path('.' + scr + '.' + dst + '.ro');
     let box2 = create_box(local_id, message);
     let motionPath2 = anime({
         targets: box2,
@@ -430,7 +434,6 @@ function resp_msg(scr, dst, message) {
         easing: 'linear',
         loop: 1,
         duration: SENDING_TIME,
-        direction: 'reverse',
         complete: function () {
             delete_box(local_id);
         }
