@@ -49,231 +49,29 @@ $(document).ready(function () {
     });
 
     $("#b1r").click(function () {
-        let flag = 0
-        if (client_connections[1] != -1) {
-            console.log('Find connection');
-            // Send read request to c1c
-
-        } else {
-            //Client is free
-            let list_server = [1, 2, 3, 4, 5];
-            shuffle(list_server);
-
-
-            for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c1.s' + list_server[i]).show();
-                client_connections[1] = list_server[i];
-
-                // (function () {
-                // reqs_msg('c1', 's1', 'Alive');
-                // myVar = setTimeout(arguments.callee, 5500);
-                // setTimeout(function () {
-                //     reqs_msg('c1', 's1', 'Alive');
-                // }, 3500);
-                // setInterval(function, 60000);
-                // })();
-
-                let running_time = connect_reqs('c1', 's' + list_server[i]);
-                // setTimeout(function () {
-                //     read_reqs('c1', 's' + list_server[i]);
-                // }, running_time);
-                // write_reqs('c1', 's' + list_server[i]);
-
-                break;
-
-                // setTimeout(function () {
-                //     reqs_msg('c1', 's' + list_server[i], 'Con?')
-                // }, 1000);
-                // if (connect_server(1, list_server[i])) {
-                //     client_connections[1] = list_server[i];
-                //     setTimeout(function () {
-                //         resp_msg('c1', 's' + list_server[i], 'Ack')
-                //     }, 3500);
-                //     //Request for the data
-                //     setTimeout(function () {
-                //         reqs_msg('c1', 's' + list_server[i], 'READ')
-                //     }, 7000);
-                //     //Talk to the database
-                //     setTimeout(function () {
-                //         reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
-                //     }, 12000);
-                //
-                //     setTimeout(function () {
-                //         resp_msg('c1', 's' + list_server[i], 'Done')
-                //     }, 15500);
-                //     // Close the connections
-                //     setTimeout(function () {
-                //         $('.cnn.' + 'c1' + '.' + 's' + list_server[i]).hide()
-                //     }, 20000);
-                //     client_connections[1] = -1;
-                //     break;
-                // }
-                // else {
-                //     client_connections[1] = -1;
-                //     resp_msg('c1', 's' + list_server[i], 'NAck')
-                //     continue;
-                // }
-            }
-        }
+        click_action(1, true);
     });
 
     $("#b2r").click(function () {
-        if (client_connections[2] != -1) {
-            console.log('Find connection');
-            // Send read request to c1c
-
-        } else {
-            //Client is free
-            let list_server = [1, 2, 3, 4, 5];
-            shuffle(list_server);
-            for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c2.s' + list_server[i]).show();
-                client_connections[2] = list_server[i];
-                setTimeout(function () {
-                    reqs_msg('c2', 's' + list_server[i], 'Con?')
-                }, 1000);
-                if (connect_server(2, list_server[i])) {
-
-                    setTimeout(function () {
-                        resp_msg('c2', 's' + list_server[i], 'Ack')
-                    }, 3500);
-                    //Request for the data
-                    setTimeout(function () {
-                        reqs_msg('c2', 's' + list_server[i], 'READ')
-                    }, 7000);
-                    //Talk to the database
-                    setTimeout(function () {
-                        reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
-                    }, 12000);
-
-                    setTimeout(function () {
-                        resp_msg('c2', 's' + list_server[i], 'Done')
-                    }, 15500);
-                    // Close the connections
-                    setTimeout(function () {
-                        $('.cnn.' + 'c2' + '.' + 's' + list_server[i]).hide()
-                        client_connections[2] = -1;
-                    }, 20000);
-                    break;
-                } else {
-                    //send nack
-                    client_connections[2] = -1;
-                    resp_msg('c2', 's' + list_server[i], 'NAck')
-                    continue;
-                }
-            }
-        }
+        click_action(2, true);
     });
 
-
     $("#b3r").click(function () {
-        if (client_connections[3] != -1) {
-            console.log('Find connection');
-            // Send read request to c1c
-
-        } else {
-            //Client is free
-            let list_server = [1, 2, 3, 4, 5];
-            shuffle(list_server);
-            for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c3.s' + list_server[i]).show();
-                if (connect_server(3, list_server[i])) {
-                    client_connections[3] = list_server[i];
-                    setTimeout(function () {
-                        reqs_msg('c3', 's' + list_server[i], 'Con?')
-                    }, 1000);
-                    setTimeout(function () {
-                        resp_msg('c3', 's' + list_server[i], 'Ack')
-                    }, 3500);
-
-                    //Request for the data
-                    setTimeout(function () {
-                        reqs_msg('c3', 's' + list_server[i], 'READ')
-                    }, 7000);
-                    //Talk to the database
-                    setTimeout(function () {
-                        reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
-                    }, 12000);
-
-                    setTimeout(function () {
-                        resp_msg('c3', 's' + list_server[i], 'Done')
-                    }, 15500);
-                    // Close the connections
-                    setTimeout(function () {
-                        $('.cnn.' + 'c3' + '.' + 's' + list_server[i]).hide()
-                        client_connections[3] = -1;
-                    }, 20000);
-                    break;
-                } else {
-                    //negative ack
-                    client_connections[3] = -1;
-                    resp_msg('c3', 's' + list_server[i], 'NAck')
-                    continue;
-                }
-            }
-        }
+        click_action(3, true);
     });
 
     $("#b1w").click(function () {
-        if (client_connections[1] != -1) {
-            console.log('Find connection');
-            // Send read request to c1c
+        click_action(1, false);
+    });
 
-        } else {
-            // Client is free
-            let list_server = [1, 2, 3, 4, 5];
-            shuffle(list_server);
-            for (let i = 0; i < list_server.length; i++) {
-                $('.cnn.c1.s' + list_server[i]).show();
-                if (connect_server(1, list_server[i])) {
-                    client_connections[1] = list_server[i];
-                    setTimeout(function () {
-                        reqs_msg('c1', 's' + list_server[i], 'Con?')
-                    }, 1000);
-                    setTimeout(function () {
-                        resp_msg('c1', 's' + list_server[i], 'Ack')
-                    }, 3500);
-                    setTimeout(function () {
-                        reqs_msg('c1', 's' + list_server[i], 'WRITE')
-                    }, 7000);
-                    //Talk to the Leader
-                    if (list_server[i] != leader) {
-                        setTimeout(function () {
-                            server_talk('s' + list_server[i], 'reverse', 'WRITE')
-                        }, 10500);
-                    }
-                    //leader Broadcast
-                    setTimeout(function () {
-                        leader_broadcast(list_server, 'WRITE')
-                    }, 13500);
-                    //server acks
-                    setTimeout(function () {
-                        leader_broadcast(list_server, 'Ack')
-                    }, 18500);
-                    //leader checks if sufficient server reply back
-                    //if above true, then server broadcasts the write command
-                    //all servers write data to the database
-                    //
-                    break;
-                } else {
-                    // server is busy, select another one
-                    continue;
-                }
-            }
-        }
+    $("#b2w").click(function () {
+        click_action(2, false);
+    });
 
+    $("#b3w").click(function () {
+        click_action(3, false);
     });
 });
-
-
-// if (message != 'NAck' && message != 'Done') {
-//     (function () {
-//         heartbeats(scr, dst, 'Alive')
-//         myVar = setTimeout(arguments.callee, 5500);
-//     })();
-// } else {
-//     clearTimeout(myVar);
-// }
 
 function connect_server(Cnum, Snum) {
 //        check for existing connections and accept only if free.
@@ -288,52 +86,39 @@ function connect_server(Cnum, Snum) {
     }
 }
 
-function server_talk(Snum, direction, message) {
-    let local_id = id;
-    id += 1;
-    if (leader != -1) { // Do this only if there is a valid leader elected
-        console.log("in talk to leader")
-        console.log('.scnn.' + Snum + '.s' + leader)
-        let path = anime.path('.scnn.' + Snum + '.s' + leader);
-        let box = create_box(local_id, message);
-        let motionPath = anime({
-            targets: box,
-            translateX: path('x'),
-            translateY: path('y'),
-            rotate: path('angle'),
-            easing: 'linear',
-            loop: 1,
-            direction: direction,
-            duration: SENDING_TIME,
-//                direction: 'reverse',
-            complete: function () {
-                delete_box(local_id);
-            }
-        });
-    } else {
-        // There is no valid Leader
-        console.log("Press Initialize!!!")
-    }
-}
+function click_action(num, is_read) {
+    let running_time, conn;
 
-function leader_broadcast(Snums, message) {
-    // This method is for all types of broadcasts
-    let count = 1;
-    for (let i = 0; i < Snums.length; i++) {
-        //Server check the database
-        setTimeout(function () {
-            reqs_msg('s' + Snums[i], 'd' + Snums[i], 'Data')
-        }, 16000);
-        if (Snums[i] != leader) {
-            if (message == 'WRITE') {
-                server_talk('s' + Snums[i], 'normal', message);
-            } else if (message == 'Ack') {
-                server_talk('s' + Snums[i], 'reverse', message)
-            }
+    if (client_connections[1] !== -1) {
+        console.log('Find connection');
+        conn = client_connections[1];
+        // Send read request to c1c
+
+    } else {
+        //Client is free
+        let list_server = [1, 2, 3, 4, 5];
+        shuffle(list_server);
+
+        for (let i = 0; i < list_server.length; i++) {
+            $('.cnn.c' + num + '.s' + list_server[i]).show();
+            client_connections[1] = list_server[i];
+
+            running_time = connect_reqs('c' + num, 's' + list_server[i]);
+            conn = list_server[i];
+            break;
         }
     }
-}
 
+    if (is_read) {
+        setTimeout(function () {
+            read_reqs('c' + num, 's' + conn);
+        }, running_time);
+    } else {
+        setTimeout(function () {
+            write_reqs('c' + num, 's' + conn);
+        }, running_time);
+    }
+}
 
 function write_reqs(scr, dst) {
     setTimeout(function () {
@@ -375,7 +160,7 @@ function write_reqs(scr, dst) {
     }
 
     setTimeout(function () {
-        reqs_msg(dst, scr, 'write_req')
+        send_msg(dst, scr, 'write_req')
     }, SENDING_TIME * 7 + WAITING_TIME * 7);
 
     return SENDING_TIME * 8 + WAITING_TIME * 8;
@@ -407,7 +192,7 @@ function connect_reqs(scr, dst) {
     }, 0);
 
     setTimeout(function () {
-        send_msg(dst, scr, 'ack')
+        send_msg(dst, scr, 'conn_ack')
     }, SENDING_TIME + WAITING_TIME);
 
     return SENDING_TIME * 2 + WAITING_TIME * 2;
