@@ -2,6 +2,7 @@ let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
 let box_width = 80;
 let box_height = 35;
 let SENDING_TIME = 2500;
+let WAITING_TIME = 500;
 let leader = -1;
 let id = 1;
 
@@ -62,38 +63,56 @@ $(document).ready(function () {
             for (let i = 0; i < list_server.length; i++) {
                 $('.cnn.c1.s' + list_server[i]).show();
                 client_connections[1] = list_server[i];
-                setTimeout(function () {
-                    reqs_msg('c1', 's' + list_server[i], 'Con?')
-                }, 1000);
-                if (connect_server(1, list_server[i])) {
-                    client_connections[1] = list_server[i];
-                    setTimeout(function () {
-                        resp_msg('c1', 's' + list_server[i], 'Ack')
-                    }, 3500);
-                    //Request for the data
-                    setTimeout(function () {
-                        reqs_msg('c1', 's' + list_server[i], 'READ')
-                    }, 7000);
-                    //Talk to the database
-                    setTimeout(function () {
-                        reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
-                    }, 12000);
 
-                    setTimeout(function () {
-                        resp_msg('c1', 's' + list_server[i], 'Done')
-                    }, 15500);
-                    // Close the connections
-                    setTimeout(function () {
-                        $('.cnn.' + 'c1' + '.' + 's' + list_server[i]).hide()
-                    }, 20000);
-                    client_connections[1] = -1;
-                    break;
-                }
-                else {
-                    client_connections[1] = -1;
-                    resp_msg('c1', 's' + list_server[i], 'NAck')
-                    continue;
-                }
+                // (function () {
+                    // reqs_msg('c1', 's1', 'Alive');
+                    // myVar = setTimeout(arguments.callee, 5500);
+                    // setTimeout(function () {
+                    //     reqs_msg('c1', 's1', 'Alive');
+                    // }, 3500);
+                    // setInterval(function, 60000);
+                // })();
+                // setTimeout(function () {
+                //     reqs_msg('c1', 's1', 'Alive');
+                // }, 500);
+                // setInterval(function () {
+                //     reqs_msg('c1', 's1', 'Alive');
+                // }, 10000);
+                read_reqs('c1', 's' + list_server[i]);
+                break;
+
+                // setTimeout(function () {
+                //     reqs_msg('c1', 's' + list_server[i], 'Con?')
+                // }, 1000);
+                // if (connect_server(1, list_server[i])) {
+                //     client_connections[1] = list_server[i];
+                //     setTimeout(function () {
+                //         resp_msg('c1', 's' + list_server[i], 'Ack')
+                //     }, 3500);
+                //     //Request for the data
+                //     setTimeout(function () {
+                //         reqs_msg('c1', 's' + list_server[i], 'READ')
+                //     }, 7000);
+                //     //Talk to the database
+                //     setTimeout(function () {
+                //         reqs_msg('s' + list_server[i], 'd' + list_server[i], 'Data')
+                //     }, 12000);
+                //
+                //     setTimeout(function () {
+                //         resp_msg('c1', 's' + list_server[i], 'Done')
+                //     }, 15500);
+                //     // Close the connections
+                //     setTimeout(function () {
+                //         $('.cnn.' + 'c1' + '.' + 's' + list_server[i]).hide()
+                //     }, 20000);
+                //     client_connections[1] = -1;
+                //     break;
+                // }
+                // else {
+                //     client_connections[1] = -1;
+                //     resp_msg('c1', 's' + list_server[i], 'NAck')
+                //     continue;
+                // }
             }
         }
     });
@@ -244,19 +263,24 @@ $(document).ready(function () {
         }
 
     });
-    // With JQuery
-    $("#ex21").slider();
-    $('#btn-speed').on("click", function () {
-        speed = $('#ex21').data('slider').options.value;
-//            console.log(speed)
-    });
 });
+
+
+function read_reqs(scr, dst) {
+    // Send request
+    setTimeout(function () {
+        reqs_msg(scr, dst, 'read_req')
+    }, 0);
+
+
+}
 
 
 function reqs_msg(scr, dst, message) {
     let local_id = id;
     id += 1;
-    let path = anime.path('.cnn.' + scr + '.' + dst);
+
+    let path = anime.path('.' + scr + '.' + dst);
     let box = create_box(local_id, message);
     let motionPath = anime({
         targets: box,
@@ -270,14 +294,13 @@ function reqs_msg(scr, dst, message) {
             delete_box(local_id);
         }
     });
-
 }
 
 function resp_msg(scr, dst, message) {
     let local_id = id;
     id += 1;
 
-    let path = anime.path('.cnn.' + scr + '.' + dst);
+    let path = anime.path('.' + scr + '.' + dst);
     let box2 = create_box(local_id, message);
     let motionPath2 = anime({
         targets: box2,
@@ -290,17 +313,18 @@ function resp_msg(scr, dst, message) {
         direction: 'reverse',
         complete: function () {
             delete_box(local_id);
-            if (message != 'NAck' && message != 'Done') {
-                (function () {
-                    heartbeats(scr, dst, 'Alive')
-                    myVar = setTimeout(arguments.callee, 5500);
-                })();
-            } else {
-                clearTimeout(myVar);
-            }
         }
     });
 }
+
+// if (message != 'NAck' && message != 'Done') {
+//     (function () {
+//         heartbeats(scr, dst, 'Alive')
+//         myVar = setTimeout(arguments.callee, 5500);
+//     })();
+// } else {
+//     clearTimeout(myVar);
+// }
 
 
 function delete_box(id) {
@@ -320,7 +344,7 @@ function create_box(id, ctn) {
     rect.setAttribute('id', 'movingbox' + id);
 
     let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-    text.setAttribute('x', -box_width / 3);
+    text.setAttribute('x', -box_width / 2.5);
     text.setAttribute('y', box_height / 5);
     text.setAttribute('width', box_width);
     text.setAttribute('height', box_height);
@@ -348,25 +372,6 @@ function connect_server(Cnum, Snum) {
         //Server is busy
         return false
     }
-}
-
-function heartbeats(scr, dst, message) {
-    let local_id = id;
-    id += 1;
-    let path = anime.path('.cnn.' + scr + '.' + dst);
-    let box = create_box(local_id, message);
-    let motionPath = anime({
-        targets: box,
-        translateX: path('x'),
-        translateY: path('y'),
-        rotate: path('angle'),
-        easing: 'linear',
-        loop: 1,
-        duration: SENDING_TIME,
-        complete: function () {
-            delete_box(local_id);
-        }
-    });
 }
 
 function server_talk(Snum, direction, message) {
@@ -397,7 +402,6 @@ function server_talk(Snum, direction, message) {
     }
 }
 
-//
 function leader_broadcast(Snums, message) {
     // This method is for all types of broadcasts
     let count = 1;
@@ -416,6 +420,11 @@ function leader_broadcast(Snums, message) {
     }
 }
 
+/**
+ * Analyses and initializes labels.
+ *
+ * @returns {Array}
+ */
 function analyse_label() {
     let tmp = [];
     let c_le = le.slice();
