@@ -71,6 +71,18 @@ $(document).ready(function () {
     $("#b3w").click(function () {
         click_action(3, false);
     });
+
+    $("#btn-speed-less").click(function () {
+        SENDING_TIME *= 4/3;
+    });
+
+    $("#btn-speed-reset").click(function () {
+        SENDING_TIME = 2500;
+    });
+
+    $("#btn-speed-more").click(function () {
+        SENDING_TIME *= 2/3;
+    });
 });
 
 function connect_server(Cnum, Snum) {
