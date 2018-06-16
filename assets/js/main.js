@@ -89,9 +89,9 @@ function connect_server(Cnum, Snum) {
 function click_action(num, is_read) {
     let running_time, conn;
 
-    if (client_connections[1] !== -1) {
+    if (client_connections[num] !== -1) {
         console.log('Find connection');
-        conn = client_connections[1];
+        conn = client_connections[num];
         // Send read request to c1c
 
     } else {
@@ -101,7 +101,7 @@ function click_action(num, is_read) {
 
         for (let i = 0; i < list_server.length; i++) {
             $('.cnn.c' + num + '.s' + list_server[i]).show();
-            client_connections[1] = list_server[i];
+            client_connections[num] = list_server[i];
 
             running_time = connect_reqs('c' + num, 's' + list_server[i]);
             conn = list_server[i];
