@@ -19,6 +19,7 @@ let server_connections = {
     4: -1,
     5: -1,
 };
+
 $('.cnn, .scnn, .num-box').hide();
 $('.d1, .d2, .d3, .d4, .d5').show();
 
@@ -84,19 +85,6 @@ $(document).ready(function () {
         SENDING_TIME *= 2/3;
     });
 });
-
-function connect_server(Cnum, Snum) {
-//        check for existing connections and accept only if free.
-    if (server_connections[Snum] == -1) {
-        // Server is free
-        server_connections[Snum] = Cnum;
-        return true;
-    }
-    else {
-        //Server is busy
-        return false
-    }
-}
 
 function click_action(num, is_read) {
     let running_time, conn;
@@ -268,7 +256,7 @@ function send_msg(scr, dst, message) {
     if (dst.slice(0, 1) === 'd' || scr.slice(0, 1) === 'c') {
         reqs_msg(scr, dst, message);
         return;
-    } else if (scr.slice(0, 1) === 'd' || scr.slice(0, 1) === 'c') {
+    } else if (scr.slice(0, 1) === 'd' || dst.slice(0, 1) === 'c') {
         resp_msg(scr, dst, message);
         return;
     }
