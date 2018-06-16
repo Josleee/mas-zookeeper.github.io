@@ -74,9 +74,10 @@ $(document).ready(function () {
                 // })();
 
                 let running_time = connect_reqs('c1', 's' + list_server[i]);
-                setTimeout(function () {
-                    read_reqs('c1', 's' + list_server[i]);
-                }, running_time);
+                // setTimeout(function () {
+                //     read_reqs('c1', 's' + list_server[i]);
+                // }, running_time);
+                // write_reqs('c1', 's' + list_server[i]);
 
                 break;
 
@@ -333,32 +334,68 @@ function leader_broadcast(Snums, message) {
     }
 }
 
+
 function write_reqs(scr, dst) {
     setTimeout(function () {
         reqs_msg(scr, dst, 'write_req')
     }, 0);
 
-    setTimeout(function () {
-        reqs_msg(dst, 'd' + dst.slice(-1), 'hb_req')
-    }, SENDING_TIME + WAITING_TIME);
+    if (leader != dst.slice(-1)) {
+        setTimeout(function () {
+            send_msg(dst, 's' + leader, 'write_req')
+        }, SENDING_TIME + WAITING_TIME);
+    }
 
+    for (let i = 0; i < l_le.length; i++) {
+        if (l_le[i] != leader) {
+            setTimeout(function () {
+                send_msg('s' + (leader), 's' + (l_le[i]), 'write_req');
+            }, SENDING_TIME * 2 + WAITING_TIME * 2);
+        }
+
+        setTimeout(function () {
+            send_msg('s' + l_le[i], 'd' + l_le[i], 'write_req');
+        }, SENDING_TIME * 3 + WAITING_TIME * 3);
+
+        setTimeout(function () {
+            send_msg('d' + l_le[i], 's' + l_le[i], 'write_ack');
+        }, SENDING_TIME * 4 + WAITING_TIME * 4);
+
+        if (l_le[i] != leader) {
+            setTimeout(function () {
+                send_msg('s' + (l_le[i]), 's' + (leader), 'write_req');
+            }, SENDING_TIME * 5 + WAITING_TIME * 5);
+        }
+    }
+
+    if (leader != dst.slice(-1)) {
+        setTimeout(function () {
+            send_msg('s' + leader, dst, 'write_req')
+        }, SENDING_TIME * 6 + WAITING_TIME * 6);
+    }
+
+    setTimeout(function () {
+        reqs_msg(dst, scr, 'write_req')
+    }, SENDING_TIME * 7 + WAITING_TIME * 7);
+
+    return SENDING_TIME * 8 + WAITING_TIME * 8;
 }
 
 function heart_beat(scr, dst) {
     setTimeout(function () {
-        reqs_msg(scr, dst, 'hb_req')
+        send_msg(scr, dst, 'hb_req')
     }, 0);
 
     setTimeout(function () {
-        reqs_msg(dst, 'd' + dst.slice(-1), 'hb_req')
+        send_msg(dst, 'd' + dst.slice(-1), 'hb_req')
     }, SENDING_TIME + WAITING_TIME);
 
     setTimeout(function () {
-        resp_msg(dst, 'd' + dst.slice(-1), 'hb_ack')
+        send_msg('d' + dst.slice(-1), dst, 'hb_ack')
     }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     setTimeout(function () {
-        resp_msg(scr, dst, 'hb_ack')
+        send_msg(dst, scr, 'hb_ack')
     }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
     return SENDING_TIME * 4 + WAITING_TIME * 4;
@@ -366,11 +403,11 @@ function heart_beat(scr, dst) {
 
 function connect_reqs(scr, dst) {
     setTimeout(function () {
-        reqs_msg(scr, dst, 'conn_req')
+        send_msg(scr, dst, 'conn_req')
     }, 0);
 
     setTimeout(function () {
-        resp_msg(scr, dst, 'conn_ack')
+        send_msg(dst, scr, 'ack')
     }, SENDING_TIME + WAITING_TIME);
 
     return SENDING_TIME * 2 + WAITING_TIME * 2;
@@ -378,19 +415,19 @@ function connect_reqs(scr, dst) {
 
 function read_reqs(scr, dst) {
     setTimeout(function () {
-        reqs_msg(scr, dst, 'read_req')
+        send_msg(scr, dst, 'read_req')
     }, 0);
 
     setTimeout(function () {
-        reqs_msg(dst, 'd' + dst.slice(-1), 'read_ack')
+        send_msg(dst, 'd' + dst.slice(-1), 'read_ack')
     }, SENDING_TIME + WAITING_TIME);
 
     setTimeout(function () {
-        resp_msg(dst, 'd' + dst.slice(-1), 'data')
+        send_msg('d' + dst.slice(-1), dst, 'data')
     }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     setTimeout(function () {
-        resp_msg(scr, dst, 'data')
+        send_msg(dst, scr, 'data')
     }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
     return SENDING_TIME * 4 + WAITING_TIME * 4;
@@ -428,6 +465,22 @@ function create_box(id, ctn) {
 function delete_box(id) {
     $("#movingbox" + id).remove();
     $("#textbox" + id).remove();
+}
+
+function send_msg(scr, dst, message) {
+    if (dst.slice(0, 1) === 'd' || scr.slice(0, 1) === 'c') {
+        reqs_msg(scr, dst, message);
+        return;
+    } else if (scr.slice(0, 1) === 'd' || scr.slice(0, 1) === 'c') {
+        resp_msg(scr, dst, message);
+        return;
+    }
+
+    if (scr.slice(-1) > dst.slice(-1)) {
+        resp_msg(dst, scr, message);
+    } else {
+        reqs_msg(dst, scr, message);
+    }
 }
 
 function reqs_msg(scr, dst, message) {
