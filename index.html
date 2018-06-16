@@ -133,9 +133,13 @@
                     <button id="btn-init" type="button" class="btn btn-outline-secondary">Initialize</button>
                     <button id="btn-reset" type="button" class="btn btn-outline-secondary">Reset system</button>
 
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button id="btn-speed-less" type="button" class="btn btn-secondary">Slower</button>
+                        <button id="btn-speed-reset" type="button" class="btn btn-secondary">Reset speed</button>
+                        <button id="btn-speed-more" type="button" class="btn btn-secondary">Faster</button>
+                    </div>
 
-                    <input type="range" min="1" max="5" value="3" class="slider" id="myRange">
-
+                    <!--<input type="range" min="1" max="5" value="3" class="slider" id="myRange">-->
                     <!--<input id="ex21" type="text"-->
                     <!--data-provide="slider"-->
                     <!--data-slider-ticks="[1, 2, 3]"-->
@@ -147,7 +151,6 @@
                     <!--data-slider-tooltip="hide"/>-->
                 </div>
 
-                <button id="btn-speed" type="button" class="btn btn-outline-secondary">Set speed</button>
 
                 <div style="position: relative; width: 95em; height: 45em; /*border: 3px solid #73AD21;*/">
                     <button id="b1r" type="button" style="position: absolute; top: 7em; left: -1em"
@@ -688,16 +691,16 @@
                         //Talk to the Leader
                         if (list_server[i] != leader) {
                             setTimeout(function () {
-                                server_talk('s' + list_server[i],'reverse', 'WRITE')
+                                server_talk('s' + list_server[i], 'reverse', 'WRITE')
                             }, 10500);
                         }
                         //leader Broadcast
                         setTimeout(function () {
-                            leader_broadcast(list_server,'WRITE')
+                            leader_broadcast(list_server, 'WRITE')
                         }, 13500);
                         //server acks
                         setTimeout(function () {
-                            leader_broadcast(list_server,'Ack')
+                            leader_broadcast(list_server, 'Ack')
                         }, 18500);
                         //leader checks if sufficient server reply back
                         //if above true, then server broadcasts the write command
@@ -837,7 +840,7 @@
         });
     }
 
-    function server_talk(Snum,direction, message) {
+    function server_talk(Snum, direction, message) {
         let local_id = id;
         id += 1;
         if (leader != -1) { // Do this only if there is a valid leader elected
@@ -852,7 +855,7 @@
                 rotate: path('angle'),
                 easing: 'linear',
                 loop: 1,
-                direction:direction,
+                direction: direction,
                 duration: SENDING_TIME,
 //                direction: 'reverse',
                 complete: function () {
@@ -865,8 +868,8 @@
         }
     }
 
-//
-    function leader_broadcast(Snums,message) {
+    //
+    function leader_broadcast(Snums, message) {
         // This method is for all types of broadcasts
         let count = 1;
         for (let i = 0; i < Snums.length; i++) {
@@ -876,9 +879,9 @@
             }, 16000);
             if (Snums[i] != leader) {
                 if (message == 'WRITE') {
-                    server_talk('s' + Snums[i],'normal', message);
+                    server_talk('s' + Snums[i], 'normal', message);
                 } else if (message == 'Ack') {
-                    server_talk('s' + Snums[i],'reverse', message)
+                    server_talk('s' + Snums[i], 'reverse', message)
                 }
             }
         }
