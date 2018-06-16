@@ -272,50 +272,21 @@ function read_reqs(scr, dst) {
         reqs_msg(scr, dst, 'read_req')
     }, 0);
 
+    setTimeout(function () {
+        reqs_msg(dst, 'd' + dst.slice(-1), 'read_ack')
+    }, SENDING_TIME + WAITING_TIME);
+
+    setTimeout(function () {
+        resp_msg(dst, 'd' + dst.slice(-1), 'data')
+    }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+    // setTimeout(function () {
+    //     resp_msg(scr, dst, 'read_ack')
+    // }, SENDING_TIME + WAITING_TIME);
+
 
 }
 
-
-function reqs_msg(scr, dst, message) {
-    let local_id = id;
-    id += 1;
-
-    let path = anime.path('.' + scr + '.' + dst);
-    let box = create_box(local_id, message);
-    let motionPath = anime({
-        targets: box,
-        translateX: path('x'),
-        translateY: path('y'),
-        rotate: path('angle'),
-        easing: 'linear',
-        loop: 1,
-        duration: SENDING_TIME,
-        complete: function () {
-            delete_box(local_id);
-        }
-    });
-}
-
-function resp_msg(scr, dst, message) {
-    let local_id = id;
-    id += 1;
-
-    let path = anime.path('.' + scr + '.' + dst);
-    let box2 = create_box(local_id, message);
-    let motionPath2 = anime({
-        targets: box2,
-        translateX: path('x'),
-        translateY: path('y'),
-        rotate: path('angle'),
-        easing: 'linear',
-        loop: 1,
-        duration: SENDING_TIME,
-        direction: 'reverse',
-        complete: function () {
-            delete_box(local_id);
-        }
-    });
-}
 
 // if (message != 'NAck' && message != 'Done') {
 //     (function () {
@@ -325,41 +296,6 @@ function resp_msg(scr, dst, message) {
 // } else {
 //     clearTimeout(myVar);
 // }
-
-
-function delete_box(id) {
-    $("#movingbox" + id).remove();
-    $("#textbox" + id).remove();
-}
-
-function create_box(id, ctn) {
-    let rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
-    rect.setAttribute('x', -box_width / 2);
-    rect.setAttribute('y', -box_height / 2);
-    rect.setAttribute('width', box_width);
-    rect.setAttribute('height', box_height);
-    rect.setAttribute('fill', 'rgba(121,121,121,1)');
-    rect.setAttribute('stroke-width', '0');
-    rect.setAttribute('opacity', '1');
-    rect.setAttribute('id', 'movingbox' + id);
-
-    let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-    text.setAttribute('x', -box_width / 2.5);
-    text.setAttribute('y', box_height / 5);
-    text.setAttribute('width', box_width);
-    text.setAttribute('height', box_height);
-    text.setAttribute('fill', 'rgba(255,255,255,1)');
-    text.setAttribute('stroke-width', '0');
-    text.setAttribute('class', 'textbox');
-    text.setAttribute('opacity', '1');
-    text.setAttribute('id', 'textbox' + id);
-    text.innerHTML = ctn;
-
-    svg.appendChild(rect);
-    svg.appendChild(text);
-
-    return [rect, text]
-}
 
 function connect_server(Cnum, Snum) {
 //        check for existing connections and accept only if free.
@@ -402,6 +338,12 @@ function server_talk(Snum, direction, message) {
     }
 }
 
+
+
+
+
+
+
 function leader_broadcast(Snums, message) {
     // This method is for all types of broadcasts
     let count = 1;
@@ -418,6 +360,81 @@ function leader_broadcast(Snums, message) {
             }
         }
     }
+}
+
+function create_box(id, ctn) {
+    let rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+    rect.setAttribute('x', -box_width / 2);
+    rect.setAttribute('y', -box_height / 2);
+    rect.setAttribute('width', box_width);
+    rect.setAttribute('height', box_height);
+    rect.setAttribute('fill', 'rgba(121,121,121,1)');
+    rect.setAttribute('stroke-width', '0');
+    rect.setAttribute('opacity', '1');
+    rect.setAttribute('id', 'movingbox' + id);
+
+    let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+    text.setAttribute('x', -box_width / 2.5);
+    text.setAttribute('y', box_height / 5);
+    text.setAttribute('width', box_width);
+    text.setAttribute('height', box_height);
+    text.setAttribute('fill', 'rgba(255,255,255,1)');
+    text.setAttribute('stroke-width', '0');
+    text.setAttribute('class', 'textbox');
+    text.setAttribute('opacity', '1');
+    text.setAttribute('id', 'textbox' + id);
+    text.innerHTML = ctn;
+
+    svg.appendChild(rect);
+    svg.appendChild(text);
+
+    return [rect, text]
+}
+
+function delete_box(id) {
+    $("#movingbox" + id).remove();
+    $("#textbox" + id).remove();
+}
+
+function reqs_msg(scr, dst, message) {
+    let local_id = id;
+    id += 1;
+
+    let path = anime.path('.' + scr + '.' + dst);
+    let box = create_box(local_id, message);
+    let motionPath = anime({
+        targets: box,
+        translateX: path('x'),
+        translateY: path('y'),
+        rotate: path('angle'),
+        easing: 'linear',
+        loop: 1,
+        duration: SENDING_TIME,
+        complete: function () {
+            delete_box(local_id);
+        }
+    });
+}
+
+function resp_msg(scr, dst, message) {
+    let local_id = id;
+    id += 1;
+
+    let path = anime.path('.' + scr + '.' + dst);
+    let box2 = create_box(local_id, message);
+    let motionPath2 = anime({
+        targets: box2,
+        translateX: path('x'),
+        translateY: path('y'),
+        rotate: path('angle'),
+        easing: 'linear',
+        loop: 1,
+        duration: SENDING_TIME,
+        direction: 'reverse',
+        complete: function () {
+            delete_box(local_id);
+        }
+    });
 }
 
 /**
