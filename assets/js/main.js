@@ -133,7 +133,7 @@ $(document).ready(function () {
     });
 
     $("#btn-speed-max").click(function () {
-        SENDING_TIME = 500;
+        SENDING_TIME = 300;
     });
 
     $("#inv1").click(function () {
@@ -163,6 +163,15 @@ function invalidate(num) {
     let index = l_le.indexOf(num);
     if (index > -1) {
         l_le.splice(index, 1);
+    }
+    if (index >= l_le.length) {
+        console.log('No following server.');
+        report_follower('-', 's' + num, 'inv');
+    } else if (index === 0) {
+        console.log('No previous server.');
+        report_follower('inv', 's' + num, 's' + l_le[0]);
+    } else {
+        report_follower('s' + l_le[index - 1], 's' + num, 's' + l_le[index]);
     }
 }
 
@@ -335,6 +344,94 @@ function write_reqs(scr, dst) {
     }, SENDING_TIME * 8 + WAITING_TIME * 8);
 
     return SENDING_TIME * 8 + WAITING_TIME * 8;
+}
+
+function report_follower(pre, del, fol) {
+    if (fol === 'inv') {
+        setTimeout(function () {
+            send_msg(del, 's' + (leader), 'inv_info_S' + del.slice(-1));
+        }, 0);
+
+        setTimeout(function () {
+            addKnowledge('s' + (leader), 'inv_info_S' + del.slice(-1));
+            for (let i = 1; i < 6; i++) {
+                if (i !== del.slice()) {
+                    $('.' + del + '.s' + i).hide();
+                    $('.' + del + '.s' + i).css('stroke', 'grey');
+                }
+            }
+        }, SENDING_TIME + WAITING_TIME);
+
+        return SENDING_TIME + WAITING_TIME;
+
+    } else if (pre === 'inv') {
+        setTimeout(function () {
+            send_msg(del, fol, 'inv_info_S' + del.slice(-1));
+        }, 0);
+
+        setTimeout(function () {
+            leader = l_le[0];
+            addKnowledge(del, 'inv_info_S' + del.slice(-1));
+            for (let i = 1; i < 6; i++) {
+                if (i !== del.slice()) {
+                    $('.' + del + '.s' + i).hide();
+                    $('.' + del + '.s' + i).css('stroke', 'grey');
+                }
+            }
+
+            for (let i = 0; i < l_le.length; i++) {
+                if (l_le[i] !== leader) {
+                    $('.s' + leader + '.s' + i).show();
+                    send_msg('s' + (leader), 's' + (l_le[i]), 'leader_info_S' + leader);
+                }
+            }
+        }, SENDING_TIME + WAITING_TIME);
+
+        setTimeout(function () {
+            for (let i = 0; i < l_le.length; i++) {
+                if (l_le[i] !== leader) {
+                    addKnowledge('s' + l_le[i], 'leader_info_S' + leader);
+                }
+            }
+        }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+        return SENDING_TIME * 2 + WAITING_TIME * 2;
+    }
+
+    setTimeout(function () {
+        send_msg(del, fol, 'inv_info_S' + del.slice(-1));
+    }, 0);
+
+    setTimeout(function () {
+        addKnowledge(fol, 'inv_info_S' + del.slice(-1));
+        send_msg(fol, 's' + (leader), 'inv_info_S' + del.slice(-1))
+    }, SENDING_TIME + WAITING_TIME);
+
+    setTimeout(function () {
+        addKnowledge('s' + (leader), 'inv_info_S' + del.slice(-1));
+        send_msg('s' + (leader), fol, 'watching_S' + pre.slice(-1));
+    }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+    setTimeout(function () {
+        $('.' + pre + '.' + fol).show();
+        $('.' + pre + '.' + fol).css('stroke', '#3d9aff');
+        addKnowledge(fol, 'watching_S' + pre.slice(-1));
+        send_msg(fol, pre, 'watching_S' + pre.slice(-1));
+    }, SENDING_TIME * 3 + WAITING_TIME * 3);
+
+    setTimeout(function () {
+        addKnowledge(pre, 'watching_S' + pre.slice(-1));
+        addKnowledge(pre, 'watching_S' + pre.slice(-1));
+        addKnowledge(fol, 'prev_S' + pre.slice(-1));
+        for (let i = 1; i < 6; i++) {
+            if (i !== del.slice()) {
+                $('.' + del + '.s' + i).hide();
+                $('.' + del + '.s' + i).css('stroke', 'grey');
+            }
+        }
+    }, SENDING_TIME * 4 + WAITING_TIME * 4);
+
+    return SENDING_TIME * 4 + WAITING_TIME * 4;
 }
 
 function heart_beat(scr, dst) {
