@@ -121,47 +121,66 @@ function click_action(num, is_read) {
 }
 
 function write_reqs(scr, dst) {
+    let write_id = Math.floor(random() * 100);
+    let write_req = 'write_req_' + write_id;
+    let write_ack = 'write_ack_' + write_id;
+    let write_all_ack = 'write_ack_all_' + write_id;
+
     setTimeout(function () {
-        reqs_msg(scr, dst, 'write_req')
+        reqs_msg(scr, dst, write_req)
     }, 0);
 
     if (leader != dst.slice(-1)) {
         setTimeout(function () {
-            send_msg(dst, 's' + leader, 'write_req')
+            addKnowledge(dst, write_req);
+            send_msg(dst, 's' + leader, write_req);
         }, SENDING_TIME + WAITING_TIME);
     }
 
     for (let i = 0; i < l_le.length; i++) {
         if (l_le[i] != leader) {
             setTimeout(function () {
-                send_msg('s' + (leader), 's' + (l_le[i]), 'write_req');
+                addKnowledge('s' + (leader), write_req);
+                send_msg('s' + (leader), 's' + (l_le[i]), write_req);
             }, SENDING_TIME * 2 + WAITING_TIME * 2);
         }
 
         setTimeout(function () {
-            send_msg('s' + l_le[i], 'd' + l_le[i], 'write_req');
+            addKnowledge('s' + l_le[i], write_req);
+            send_msg('s' + l_le[i], 'd' + l_le[i], write_req);
         }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
         setTimeout(function () {
-            send_msg('d' + l_le[i], 's' + l_le[i], 'write_ack');
+            addKnowledge('d' + l_le[i], write_req);
+            send_msg('d' + l_le[i], 's' + l_le[i], write_ack);
         }, SENDING_TIME * 4 + WAITING_TIME * 4);
 
         if (l_le[i] != leader) {
             setTimeout(function () {
-                send_msg('s' + (l_le[i]), 's' + (leader), 'write_req');
+                send_msg('s' + (l_le[i]), 's' + (leader), write_ack);
             }, SENDING_TIME * 5 + WAITING_TIME * 5);
         }
+
+        setTimeout(function () {
+            addKnowledge('s' + l_le[i], write_ack);
+        }, SENDING_TIME * 5 + WAITING_TIME * 5);
     }
 
     if (leader != dst.slice(-1)) {
         setTimeout(function () {
-            send_msg('s' + leader, dst, 'write_req')
+            addKnowledge('s' + leader, write_all_ack);
+            send_msg('s' + leader, dst, write_ack);
         }, SENDING_TIME * 6 + WAITING_TIME * 6);
     }
 
     setTimeout(function () {
-        send_msg(dst, scr, 'write_req')
+        addKnowledge(dst, write_all_ack);
+        send_msg(dst, scr, write_ack);
     }, SENDING_TIME * 7 + WAITING_TIME * 7);
+
+    setTimeout(function () {
+        addKnowledge(scr, write_all_ack);
+    }, SENDING_TIME * 8 + WAITING_TIME * 8);
 
     return SENDING_TIME * 8 + WAITING_TIME * 8;
 }
@@ -172,14 +191,22 @@ function heart_beat(scr, dst) {
     }, 0);
 
     setTimeout(function () {
+        addKnowledge(dst, 'hb_req');
         send_msg(dst, 'd' + dst.slice(-1), 'hb_req')
     }, SENDING_TIME + WAITING_TIME);
 
     setTimeout(function () {
+        addKnowledge('d' + dst.slice(-1), 'hb_req');
         send_msg('d' + dst.slice(-1), dst, 'hb_ack')
     }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     setTimeout(function () {
+        addKnowledge(dst, 'hb_ack');
+        send_msg(dst, scr, 'hb_ack')
+    }, SENDING_TIME * 3 + WAITING_TIME * 3);
+
+    setTimeout(function () {
+        addKnowledge(scr, 'hb_ack');
         send_msg(dst, scr, 'hb_ack')
     }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
@@ -240,6 +267,10 @@ function random() {
 }
 
 function addKnowledge(item, msg) {
+    if ($('#b' + item).html().split('<br>')[0] === 'K' + item.slice(0, 1) + '(' + msg + ')') {
+        return;
+    }
+
     $('#b' + item).html('K' + item.slice(0, 1) + '(' + msg + ')<br>' + $('#b' + item).html());
 }
 
@@ -255,7 +286,7 @@ function create_box(id, ctn) {
     rect.setAttribute('id', 'movingbox' + id);
 
     let text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-    text.setAttribute('x', -box_width / 2.5);
+    text.setAttribute('x', -box_width / 2.3);
     text.setAttribute('y', box_height / 5);
     text.setAttribute('width', box_width);
     text.setAttribute('height', box_height);
