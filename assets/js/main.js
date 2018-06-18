@@ -1,4 +1,5 @@
-let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+let le = [];
+let state = [true, true, true, true, true];
 let init = false;
 let box_width = 100;
 let box_height = 35;
@@ -34,19 +35,39 @@ $(document).ready(function () {
     $("#btn-reset").click(function () {
         $('.cnn, .scnn, .num-box').hide();
         $('.d1, .d2, .d3, .d4, .d5').show();
-        le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
         $('.scnn').css('stroke', 'grey');
+        le = [];
         init = false;
     });
 
     $("#btn-init").click(function () {
+        let count = 0;
+        for (let i = 0; i < 5; i++) {
+            if (state[i] === true) {
+                le.push('/le/00' + count++);
+            }
+        }
+
         shuffle(le);
+        for (let i = 0; i < 5; i++) {
+            if (state[i] === false) {
+                le.splice(i, 0, 'invalid');
+            }
+        }
+
         for (let i = 0; i < 5; i++) {
             $('#ns' + (i + 1)).text(le[i]);
         }
+
         l_le = analyse_label();
         leader = l_le[0];
-        $('.scnn.s' + l_le[0]).fadeIn(2000);
+        for (let i = 0; i < 5; i++) {
+            if (state[i] === true && i + 1 !== leader) {
+                console.log('.s' + l_le[0] + '.s' + (i + 1));
+                $('.scnn.s' + l_le[0] + '.s' + (i + 1)).fadeIn(2000);
+            }
+        }
+
         $('.num-box').fadeIn(2000);
         init = true;
     });
@@ -110,6 +131,8 @@ $(document).ready(function () {
 
 function invalidate(num) {
     document.getElementById('s' + num).src = "assets/images/icons/withID/s-down.png";
+    state[num - 1] = false;
+    console.log(le)
 }
 
 function click_action(num, is_read) {
@@ -431,9 +454,11 @@ function analyse_label() {
     }
 
     for (let i = 1; i < tmp.length; i++) {
+        // console.log(('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]))
         $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).fadeIn(2000);
         $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).css('stroke', '#3d9aff');
     }
+    console.log(tmp);
     return tmp;
 }
 
