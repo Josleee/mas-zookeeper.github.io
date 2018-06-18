@@ -140,11 +140,10 @@ $(document).ready(function () {
 function invalidate(num) {
     document.getElementById('s' + num).src = "assets/images/icons/withID/s-down.png";
     state[num - 1] = false;
-    console.log(le)
 }
 
 function click_action(num, is_read) {
-    let running_time, conn;
+    let running_time = 0, conn = 0;
 
     if (init === false) {
         alert('Please initialize the system first.');
@@ -162,12 +161,18 @@ function click_action(num, is_read) {
         shuffle(list_server);
 
         for (let i = 0; i < list_server.length; i++) {
-            $('.cnn.c' + num + '.s' + list_server[i]).show();
             client_connections[num] = list_server[i];
 
-            running_time = connect_reqs('c' + num, 's' + list_server[i]);
-            conn = list_server[i];
-            break;
+            setTimeout(function () {
+                connect_reqs('c' + num, 's' + list_server[i])
+            }, running_time);
+
+            running_time += SENDING_TIME * 2 + WAITING_TIME * 2;
+
+            if (state[list_server[i] - 1] === true){
+                conn = list_server[i];
+                break;
+            }
         }
     }
 
@@ -276,17 +281,29 @@ function heart_beat(scr, dst) {
 }
 
 function connect_reqs(scr, dst) {
+    $('.cnn.' + scr + '.' + dst).show();
+
     setTimeout(function () {
         send_msg(scr, dst, 'conn_req')
     }, 0);
 
     setTimeout(function () {
         addKnowledge(dst, 'conn_req');
-        send_msg(dst, scr, 'conn_ack')
+        if (state[dst.slice(-1) - 1] === true) {
+            send_msg(dst, scr, 'conn_ack')
+        } else {
+            send_msg(dst, scr, 'conn_fail_S' + dst.slice(-1))
+        }
     }, SENDING_TIME + WAITING_TIME);
 
     setTimeout(function () {
-        addKnowledge(scr, 'conn_ack');
+        if (state[dst.slice(-1) - 1] === true) {
+            addKnowledge(scr, 'conn_ack');
+            $('.cnn.' + scr + '.' + dst).css('stroke', '#ff875c');
+        } else {
+            addKnowledge(scr, 'conn_fail_S' + dst.slice(-1));
+            $('.cnn.' + scr + '.' + dst).hide();
+        }
     }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     return SENDING_TIME * 2 + WAITING_TIME * 2;
@@ -465,8 +482,8 @@ function analyse_label() {
         // console.log(('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]))
         $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).fadeIn(2000);
         $('.scnn.s' + tmp[i - 1] + '.s' + tmp[i]).css('stroke', '#3d9aff');
+        addKnowledge('s' + tmp[i], 'prev_S' + tmp[i - 1]);
     }
-    console.log(tmp);
     return tmp;
 }
 
