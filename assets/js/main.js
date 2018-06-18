@@ -50,6 +50,7 @@ $(document).ready(function () {
     });
 
     $("#b1r").click(function () {
+        addKnowledge('d1', 'data');
         click_action(1, true);
     });
 
@@ -74,7 +75,7 @@ $(document).ready(function () {
     });
 
     $("#btn-speed-less").click(function () {
-        SENDING_TIME *= 4/3;
+        SENDING_TIME *= 4 / 3;
     });
 
     $("#btn-speed-reset").click(function () {
@@ -82,7 +83,7 @@ $(document).ready(function () {
     });
 
     $("#btn-speed-more").click(function () {
-        SENDING_TIME *= 2/3;
+        SENDING_TIME *= 2 / 3;
     });
 });
 
@@ -216,6 +217,10 @@ function read_reqs(scr, dst) {
     }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
     return SENDING_TIME * 4 + WAITING_TIME * 4;
+}
+
+function addKnowledge(item, msg) {
+    $('#b' + item).html('K' + item.slice(0, 1) + '(' + msg + ')<br>' + $('#b' + item).html());
 }
 
 function create_box(id, ctn) {
