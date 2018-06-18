@@ -160,10 +160,14 @@ $(document).ready(function () {
 function invalidate(num) {
     document.getElementById('s' + num).src = "assets/images/icons/withID/s-down.png";
     state[num - 1] = false;
+    let index = l_le.indexOf(num);
+    if (index > -1) {
+        l_le.splice(index, 1);
+    }
 }
 
 function click_action(num, is_read) {
-    let running_time = 0, conn = 0;
+    let running_time = 0, conn = -1;
 
     if (init === false) {
         alert('Please initialize the system first.');
@@ -173,8 +177,44 @@ function click_action(num, is_read) {
     if (client_connections[num] !== -1) {
         console.log('Find connection');
         conn = client_connections[num];
-        // Send read request to c1c
+        // Send read request
 
+        if (state[conn - 1] === false) {
+            let old_conn = conn;
+            if (is_read) {
+                setTimeout(function () {
+                    read_reqs('c' + num, 's' + old_conn);
+                }, running_time);
+            } else {
+                setTimeout(function () {
+                    write_reqs('c' + num, 's' + old_conn);
+                }, running_time);
+            }
+
+            let list_server = [1, 2, 3, 4, 5];
+            list_server.splice(old_conn - 1, 1);
+            shuffle(list_server);
+
+            running_time += SENDING_TIME * 2 + WAITING_TIME * 2;
+
+            for (let i = 0; i < list_server.length; i++) {
+                client_connections[num] = list_server[i];
+
+                setTimeout(function () {
+                    connect_reqs('c' + num, 's' + list_server[i])
+                }, running_time);
+
+                running_time += SENDING_TIME * 2 + WAITING_TIME * 2;
+
+                if (state[list_server[i] - 1] === true) {
+                    conn = list_server[i];
+                    break;
+                } else {
+                    client_connections[num] = -1;
+                    conn = -1;
+                }
+            }
+        }
     } else {
         //Client is free
         let list_server = [1, 2, 3, 4, 5];
@@ -189,11 +229,21 @@ function click_action(num, is_read) {
 
             running_time += SENDING_TIME * 2 + WAITING_TIME * 2;
 
-            if (state[list_server[i] - 1] === true){
+            if (state[list_server[i] - 1] === true) {
                 conn = list_server[i];
                 break;
+            } else {
+                client_connections[num] = -1;
+                conn = -1;
             }
         }
+    }
+
+    if (conn === -1) {
+        setTimeout(function () {
+            alert('No server is available.');
+        }, running_time);
+        return;
     }
 
     if (is_read) {
@@ -216,6 +266,21 @@ function write_reqs(scr, dst) {
     setTimeout(function () {
         reqs_msg(scr, dst, write_req)
     }, 0);
+
+    if (state[dst.slice(-1) - 1] === false) {
+        setTimeout(function () {
+            addKnowledge(dst, write_req);
+            send_msg(dst, scr, 'write_fail_S' + dst.slice(-1))
+        }, SENDING_TIME + WAITING_TIME);
+
+        setTimeout(function () {
+            $('.cnn.' + scr + '.' + dst).hide();
+            $('.cnn.' + scr + '.' + dst).css('stroke', 'grey');
+            addKnowledge(scr, 'write_fail_S' + dst.slice(-1));
+        }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+        return SENDING_TIME * 2 + WAITING_TIME * 2;
+    }
 
     if (leader != dst.slice(-1)) {
         setTimeout(function () {
@@ -335,6 +400,21 @@ function read_reqs(scr, dst) {
     setTimeout(function () {
         send_msg(scr, dst, 'read_req_' + read_id)
     }, 0);
+
+    if (state[dst.slice(-1) - 1] === false) {
+        setTimeout(function () {
+            addKnowledge(dst, 'read_req_' + read_id);
+            send_msg(dst, scr, 'read_fail_S' + dst.slice(-1))
+        }, SENDING_TIME + WAITING_TIME);
+
+        setTimeout(function () {
+            $('.cnn.' + scr + '.' + dst).hide();
+            $('.cnn.' + scr + '.' + dst).css('stroke', 'grey');
+            addKnowledge(scr, 'read_fail_S' + dst.slice(-1));
+        }, SENDING_TIME * 2 + WAITING_TIME * 2);
+
+        return SENDING_TIME * 2 + WAITING_TIME * 2;
+    }
 
     setTimeout(function () {
         addKnowledge(dst, 'read_req_' + read_id);
