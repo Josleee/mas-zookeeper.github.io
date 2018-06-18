@@ -67,51 +67,63 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="main-content" id="tab1" style="display: none;">
+            <div class="main-content" id="tab1">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Introduction</h1>
-                    <h1 class="h3">Zookeeper in Distributed System</h1>
+                    <h1 class="h3">Zookeeper in Distributed System (Arjun, Yikun and Parth)</h1>
                 </div>
-                <h5>Analysis of Zookeeper software for distributed systems</h5>
-                <p>Apache ZooKeeper is a service used by distributed systems to coordinate between themselves and
-                    maintain shared data with robust synchronization techniques. The processes in a zookeeper managed
-                    cluster is managed by a leader. The leader node is selected from the list of nodes by election. The
-                    rest of the nodes are called as followers. These are the servers which would be servicing the
-                    clients. There is also a watcher node, which helps to detect failures and helps in new leader
-                    election.</p>
-                <p>Zookeeper mainly does two tasks:</p>
+                <h5>Zookeeper introduction</h5>
+                <p>Zookeeper is a distributed system used for co-ordination between large number of hosts. Coordination
+                    and management of services in a distributed system in a complicated process and Zookeeper
+                    comes to the rescue because of it’s simple architecture and API design. A distributed system is
+                    basically an interconnected group of systems which collaborate together to establish a task, also
+                    known as a service, this group of system is usually referred to as a <strong>cluster</strong> and
+                    each system in this cluster is referred to as a <strong>node</strong>. As this cluster(distributed)
+                    is used to run a service, it contains both client and server interfaces.</p>
+                <p>Our focus for this project is primarily the <strong>server</strong> side of the Zookeeper distributed
+                    system because servers are ’actually’ distributed systems in epistemic terms, which form the cluster
+                    and have a common interface for clients to send in read and write requests. We will analyze all
+                    these instances of Zookeeper distributed system from an epistemic point of view.</p>
+                <p>Analysis of a distributed system from an epistemic point of view is an interesting proposition,
+                    primarily because of scale at which information(knowledge) update occurs for all the agents in a
+                    distributed system. Our analysis is focused on two use cases of the zookeeper distributed system,
+                    communication between clients and server(read-write requests) and leader election for managing
+                    coordination between nodes in the cluster. Epistemic analysis is the right tool for analyzing how a
+                    distributed system retains all the desired data properties, such as data integrity, essential
+                    properties of a leader election and client-server communication</p>
+
+                <img src="assets/images/papers/f1.png" class="center" style="width: 40%; height: 40%">
+                <h5>Benefits of a distributed system</h5>
+                <p>There are three major advantages of a distributed system, we list down and briefly elaborate on each
+                    of them below:</p>
                 <ol>
-                    <li>Active Messaging:</li>
-                    <p>In distributed systems, we have a group of servers each providing service to clients. The clients
-                        have a list of servers they can connect to. They send a request to the server they want to
-                        connect to, if the request is successful, the server sends an acknowledgement, if the connection
-                        is refused by the server, the client tries to connect to a different server.</p>
-                    <p>Each client can either send a data read request or a data write request. In the event of data
-                        read request, the server will read the data from its copy of the database and sends the
-                        response, or it sends an acknowledgement stating that the data was not present in the
-                        database.</p>
-                    <p>When the client sends a data write request, the server does not update the database im-
-                        mediately. The write request is sent to the leader, the leader verifies whether the request is
-                        genuine and then announces to all the servers in zookeeper to update their copies of the
-                        database with the data that is to be written. The collection of servers in zookeeper is called a
-                        quorum. If a sufficient number of servers respond back to the leader’s announcement, then the
-                        write is permitted by the leader. This way the data is updated in all the servers copy of the
-                        database. Once the write is successful, acknowledgement is sent to the client.</p>
-                    <li>Leadership Election:</li>
-                    <p>All the servers in zookeeper, create a sequential, ephemeral znode with the same path. The
-                        zookeeper ensemble, appends a 10 digit sequence number to the path.Based on the config- uration,
-                        the node with the smallest sequence number can be made as the leader.The rest of the nodes are
-                        the followers. Each follower watches the node with the next smallest se- quence number.If the
-                        leader fails, the watcher node sends a notification to the node which was watching the current
-                        leader.This node then checks if there are any nodes with a lower sequence number then itself. If
-                        it finds such a node, then that node is made as the next leader, else the same node is made as
-                        the leader.
-                    </p>
+                    <li>Reliability:</li>
+                    <p>Failure of any node in the cluster[distributed system] doesn’t result in failure of the whole
+                        infrastructure. Similarly, zookeeper server side distributed system architecture
+                        deploys a fault tolerant mechanism which can easily tackle situations in which any subset of the
+                        system might breakdown.</p>
+                    <li>Scalability:</li>
+                    <p>A distributed system can easily be scaled by simply adding more nodes into the architecture.</p>
+                    <li>Transparency:</li>
+                    <p>A distributed system presents itself as one entity, for example all the servers in figure 1 can
+                        be accessed from a single interface, hiding away all the complications within the architecture
+                        itself. Thus, making the whole process transparent and easy to understand.</p>
                 </ol>
-                <h5>Epistemic logic in Zookeeper</h5>
-                <p>Using Epistemic logic, we can analyze the different functionalities of the software. We can also
-                    analyze different situations of failures and how the software handles these situations.</p>
+
+                <h5>Kripke model analysis of zookeeper</h5>
+                <p>For a reliable functioning of the zookeeper ensemble, at least three servers need to be in a working
+                    state. Based in this information we can draw the following Kripke model.</p>
+                <p>Let M be a arbitrary kripke model with < S, π, R1, R2 >. </p>
+                <p>π =< p, ¬p ></p>
+                <p>p : Zookeeper system in working condition.</p>
+                <p>¬ p : Zookeeper system in failure condition.</p>
+                <img src="assets/images/papers/f2.png" class="center" style="width: 25%; height: 25%">
+                <P>R1 : Denotes the transition from working state to failure state. It implies that, less than systems
+                    in the zookeeper ensemble are in working condition.</p>
+                <p>R2 : Denotes the transition from failure to working condition.It implies that more than three systems
+                    are in working condition.</p>
+
             </div>
 
             <div class="main-content" id="tab2" style="display: none;">
@@ -120,9 +132,107 @@
                     <h1 class="h2">Implementation</h1>
                     <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
+                <h5>Client-server communication</h5>
+                <p>Client-server communication is an integral part of any distributed system and how zookeeper
+                    distributed system accepts and distributes services between all the nodes in the cluster and
+                    completes the requested tasks. Two major communication paradigm between a client and server is read
+                    and write requests. In the following two subsections we elaborate on each of these communication
+                    paradigms and updates rendered to knowledge stack of all the agents involved in the
+                    communication:</p>
+                <img src="assets/images/papers/f3.png" class="center" style="width: 45%; height: 45%">
+
+                <h6>Read request and task allocation</h6>
+                <p>If a client wants to read from the database of a server in the Zookeeper distributed system. Client
+                    first serves a connection request to the server, to which the server sends an acknowledgement
+                    indicating that the server is not busy and is ready to handle the request from the client. Once the
+                    connection is established, the client serves a data read request to the server with the pointer to
+                    the data in the database, consequently, the server forwards this request to the database and the
+                    database responds with the data stored at that particular pointer. This data is then conveyed to the
+                    client. With this, one read cycle concludes. Read operation is one of the strong points in
+                    Zookeeper, as read requests are served by a particular server to the client. They are much faster
+                    and can also be tackled concurrently. We present read specific knowledge stack with knowledge
+                    updates at each step for all the agents, as shown in figure 3.</p>
+                <img src="assets/images/papers/f4.png" class="center"
+                     style="width: 60%; height: 60%; margin-bottom: 3em; margin-top: 3em;">
+
+                <h6>Write request and task allocation</h6>
+                <p>Write operations in Zookeeper are really interesting from an epistemic point of view. The leader in
+                    the cluster is solely responsible for all the write operations. If a connection is not already
+                    established between the client and server, then client first serves a connection request to the
+                    server. Once the connection request is approved, the client then sends a write request. The server
+                    then forwards the write request to the leader, and leader then <strong>atomic broadcasts[public
+                        announcement]</strong> this request to rest of the servers in the cluster. Once all the servers
+                    receive the request from the leader, they write the data into their respective databases. Then they
+                    send back an acknowledgement indicating the write was successful. Once the leader receives this
+                    acknowledgement from the servers in the cluster, it then sends an acknowledgement to the server,
+                    which got the write request from the client. This server then sends the confirmation back to the
+                    client.</p>
+                <p>This process has it’s advantages and disadvantages. One of the major advantages is the fact that data
+                    is persistent throughout all the corresponding databases of servers in the cluster. Also, this means
+                    that write operations cannot be concurrent and can only be linear and this is the reason why
+                    Zookeeper under-performs when it comes to write-extensive tasks.
+                </p>
+                <img src="assets/images/papers/f5.png" class="center"
+                     style="width: 60%; height: 60%; margin-bottom: 3em; margin-top: 3em;">
+
+                <h5>Leader Election</h5>
+                <p>Leader election in a distributed system is the process of electing a node as a coordinator of tasks
+                    assigned to the distributed system. At the initial state, that is, before the task is assigned, all
+                    the nodes in the cluster are unaware as to who the leader is or either unable to coordinate within
+                    the cluster. After a leader election, all the nodes in the cluster recognize one unique node as the
+                    <strong>leader</strong> and coordinate with it for particular use cases of the cluster.</p>
+                <p>In order to elect a leader, all the nodes in the cluster communicate with each other and devise a
+                    means to single out a leader node. Leader election algorithms are designed to minimize the byte
+                    transmission during the election process. In a large cluster if byte transmission is not efficient
+                    enough then the run-time of election process can take a lot of time, rendering the whole cluster
+                    slow or practically ineffective.</p>
+                <p>There are there important criteria which a valid leader election algorithm should meet and they are
+                    as follows:</p>
+                <ol>
+                    <li>A election algorithm should finish it’s operations in finite time, that is, it should be based
+                        on
+                        deterministic states and cannot incorporate probabilistic election processes.
+                    </li>
+                    <li>Only one node should be elected as a leader after application of the leader election algorithm
+                        and in case of a conflict, the algorithm should provide the conflict removal procedures.
+                    </li>
+                    <li>Knowledge of all the nodes should be updated once the leader election is over and all the nodes
+                        should know which node is the leader node.
+                    </li>
+                </ol>
+
+                <h6>Leader election algorithm</h6>
+                <img src="assets/images/papers/f6.png" class="center"
+                     style="width: 60%; height: 60%; margin-bottom: 3em; margin-top: 3em;">
+                <p>In this section, we elaborate on the election algorithm for leader election which we have used in our
+                    project. We analyze this scenario for N nodes. The process of election process is as follows:</p>
+                <ol>
+                    <li>1) All nodes create a sequential, temporary znode with the same path. For example, /app/leader
+                        election/guid_
+                    </li>
+                    <li>Zookeeper ensemble will append the 10-digit sequence number to the path and the znode created
+                        will be /app/leader election/guid 001, /guid 002, etc.
+                    </li>
+                    <li>Out of all the nodes, the node which created the smallest number will be elected as the leader
+                        and all the other nodes will become it’s followers.
+                    </li>
+                    <li>In addition to followers, this algorithm also creates watchers, for example, znode with number 8
+                        will watch the znode with number 7 and znode 7 will watch znode with number 6 and so on. This is
+                        useful in case of leader node failure and this way election process can be re-initiated in case
+                        a leader fails.
+                    </li>
+                    <li>If the leader node fails, in that case the znode corresponding to the leader gets removed. Also,
+                        the next in line follower will obtain this information from the watcher. Now this follower will
+                        check for znodes with the smallest number, if it cannot find a znode meeting the requirements
+                        then it will take up role of a leader.
+                    </li>
+                    <li>All the other nodes will also elect the znode with the smallest number as the leader.</li>
+                </ol>
+
+
             </div>
 
-            <div class="main-content" id="tab3">
+            <div class="main-content" id="tab3" style="display: none;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3
             border-bottom">
                     <h1 class="h2">Application</h1>
@@ -448,6 +558,43 @@
                     <!--<img src="assets/images/spark.gif" alt="database" style="display:none;width:5em;height:5em;-->
                     <!--position: absolute; top: 50em; left: 50em" id="spark">-->
                 </div>
+                <h5>Application and user guide</h5>
+                <p>
+                    In this section we introduce the interface of our final application for this project. The main
+                    screen of the application consists of a set of three clients[aligned vertically on the extreme
+                    left], a set of five servers[aligned vertically in the center] and their respective
+                    databases[aligned vertically on extreme right] as shown in figure 5. On the top left corner of the
+                    application screen there are seven horizontally aligned buttons annotated as follows: Initialize,
+                    Reset System, 5x slower, Slower, Reset speed, Faster, 5x faster. Against each client we also have
+                    two buttons for read and write operation. With each agent in the distributed system we have a
+                    knowledge stack which keeps a track of all the knowledge generated in a particular order and updates
+                    for each agent in the distributed system.</p>
+                <ul>
+                    <li>Initialization</li>
+                    <p>We can initialize the distributed zookeeper system by clicking on the initialize button. Clicking
+                        on the initialize button will perform the election selection algorithm on the cluster of
+                        servers, as can be seen in figure 6. We can also observe that server with the smallest number
+                        will be selected as the leader for the cluster of servers, in this particular example, it is
+                        server 5.</p>
+                    <li>Reset</li>
+                    <p>We can reset the whole system clicking on the <strong>Reset</strong> system button and it will
+                        retract back to the initial state as shown in figure 5. In the initial state there is no leader
+                        and there is no connection established between the servers too.</p>
+                    <li>5x button</li>
+                    <p>By clicking on 5x slower button we can slow down the speed of all communication between the
+                        client, servers and databases. In essence, the system will still perform the same operations,
+                        just it will be 5x slower. Similarly, we can use Slower, Reset Speed[system returns back to the
+                        initial speed], Faster and 5x faster.</p>
+                    <li>Read</li>
+                    <p>By clicking on the read button for a client, we can initialize a read operation from that
+                        particular client to a server and this process will be simulated between the client, server and
+                        the database, in the application.</p>
+                    <li>Write</li>
+                    <p>By clicking on the read button for a client, we can initialize a read operation from that
+                        particular client to a server and this process will be simulated between the client, server,
+                        leader, and database, in the application.</p>
+                </ul>
+
             </div>
 
             <div class="main-content" id="tab4" style="display: none;">
@@ -456,6 +603,17 @@
                     <h1 class="h2">Conclusion</h1>
                     <h1 class="h3">Zookeeper in Distributed System</h1>
                 </div>
+                <p>
+                    We analyzed basic components of a distributed system[zookeeper architecture] and it’s communication
+                    paradigms through an epistemic point of view. We discussed the advantages and disadvantages of
+                    a distributed system, specific to the zookeeper architecture and we reasoned why epistemic analysis
+                    of a distributed architecture might be an interesting proposition. We tracked knowledge space
+                    for all the agents in our distributed system through a knowledge stack and observed how knowledge
+                    was updated for all the agents in read-write requests and in the leader election process
+                    simulations, which we showcased in our application.</p>
+                <p>Our sole purpose for this project was to look at an entirely new problem from an epistemic point of
+                    view. To dissect a complicated enough system and reduce it down to the very fundamental units of any
+                    information system, that is, knowledge and propagation of knowledge[information transmission].</p>
             </div>
 
             <div class="main-content" id="tab5" style="display: none;">
@@ -467,12 +625,21 @@
                 <p>This website offers a implementation of Zookeeper protocol with Kripke models. The model checker was
                     developed for the Multi Agent Systems course at the University of Groningen for the academic year of
                     2018/2019.</p>
-                <p>Group members:</p>
+                <h5>Group members</h5>
                 <ul>
                     <li>Arjun Harish</li>
                     <li>Yikun Li</li>
                     <li>Parth Tiwary</li>
                 </ul>
+                <h5>References</h5>
+                <p>[1] Patrick Hunt, Mahadev Konar, and Flavio P. Junqueira. ZooKeeper: Wait-free coordination for
+                    Internet-scale systems. Yahoo Research, 2010.</p>
+                <p>[2] M. Abd-El-Malek, G. R. Ganger, G. R. Goodson, M. K. Reiter, and J. J. Wylie. Fault-scalable
+                    byzantine fault-tolerant services. In SOSP ’05: Proceedings of the twentieth ACM symposium on
+                    Operating systems principles, pages 59–74, New York, NY, USA, 2005. ACM.</p>
+                <p>[3] R. Fagin, J. Halpern, Y. Moses, M. Vardi Reasoning about Knowledge MIT Press (1995)</p>
+                <p>[4] R. Fagin, J. Halpern, Y. Moses, M. Vardi What can machines know? On the properties of
+                    knowledge in distributed systems Journal of the ACM, 39 (2) (1992), pp. 328-37</p>
             </div>
             <!--<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>-->
         </main>

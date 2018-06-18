@@ -30,9 +30,6 @@ let svg = document.getElementsByTagName('svg')[6];
 
 
 $(document).ready(function () {
-    //  When user clicks on tab, this code will be executed
-    // let speed = $('#ex21').data('slider').options.value;
-
     $("#btn-reset").click(function () {
         $('.cnn, .scnn, .num-box, .star').hide();
         $('.d1, .d2, .d3, .d4, .d5').show();
