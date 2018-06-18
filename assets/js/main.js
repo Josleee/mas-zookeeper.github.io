@@ -38,6 +38,15 @@ $(document).ready(function () {
         $('.scnn').css('stroke', 'grey');
         le = [];
         init = false;
+        leader = -1;
+        for (let i = 1; i < 6; i++) {
+            state[i - 1] = true;
+            if (i <= 3) {
+                $('#bc' + i).html('Kc(S1),...,Kc(S5)');
+            }
+            $('#bs' + i).html('Ks(S1),...,Ks(S5)');
+            $('#bd' + i).html('Kb(S' + (i) + ')');
+        }
     });
 
     $("#btn-init").click(function () {
@@ -63,7 +72,6 @@ $(document).ready(function () {
         leader = l_le[0];
         for (let i = 0; i < 5; i++) {
             if (state[i] === true && i + 1 !== leader) {
-                console.log('.s' + l_le[0] + '.s' + (i + 1));
                 $('.scnn.s' + l_le[0] + '.s' + (i + 1)).fadeIn(2000);
             }
         }
