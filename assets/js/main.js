@@ -1,4 +1,5 @@
 let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
+let init = false;
 let box_width = 100;
 let box_height = 35;
 let SENDING_TIME = 2500;
@@ -35,6 +36,7 @@ $(document).ready(function () {
         $('.d1, .d2, .d3, .d4, .d5').show();
         le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
         $('.scnn').css('stroke', 'grey');
+        init = false;
     });
 
     $("#btn-init").click(function () {
@@ -46,7 +48,7 @@ $(document).ready(function () {
         leader = l_le[0];
         $('.scnn.s' + l_le[0]).fadeIn(2000);
         $('.num-box').fadeIn(2000);
-
+        init = true;
     });
 
     $("#b1r").click(function () {
@@ -84,10 +86,39 @@ $(document).ready(function () {
     $("#btn-speed-more").click(function () {
         SENDING_TIME *= 2 / 3;
     });
+
+    $("#inv1").click(function () {
+        invalidate(1);
+    });
+
+    $("#inv2").click(function () {
+        invalidate(2);
+    });
+
+    $("#inv3").click(function () {
+        invalidate(3);
+    });
+
+    $("#inv4").click(function () {
+        invalidate(4);
+    });
+
+    $("#inv5").click(function () {
+        invalidate(5);
+    });
 });
+
+function invalidate(num) {
+    document.getElementById('s' + num).src = "assets/images/icons/withID/s-down.png";
+}
 
 function click_action(num, is_read) {
     let running_time, conn;
+
+    if (init === false) {
+        alert('Please initialize the system first.');
+        return;
+    }
 
     if (client_connections[num] !== -1) {
         console.log('Find connection');
