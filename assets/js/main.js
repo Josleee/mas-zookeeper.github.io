@@ -1,5 +1,6 @@
 let le = [];
 let state = [true, true, true, true, true];
+let invalid = [false, false, false, false, false];
 let init = false;
 let box_width = 100;
 let box_height = 35;
@@ -48,6 +49,7 @@ $(document).ready(function () {
         for (let i = 1; i < 6; i++) {
             document.getElementById('s' + i).src = "assets/images/icons/withID/s" + i + ".png";
             state[i - 1] = true;
+            invalid[i - 1] = false;
             if (i <= 3) {
                 $('#bc' + i).html('Kc(S1),...,Kc(S5)');
             }
@@ -158,6 +160,12 @@ $(document).ready(function () {
 });
 
 function invalidate(num) {
+    if (invalid[num - 1] === true) {
+        return;
+    } else {
+        invalid[num - 1] = true;
+    }
+
     document.getElementById('s' + num).src = "assets/images/icons/withID/s-down.png";
     state[num - 1] = false;
     let index = l_le.indexOf(num);
