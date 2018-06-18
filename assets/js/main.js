@@ -34,7 +34,7 @@ $(document).ready(function () {
     // let speed = $('#ex21').data('slider').options.value;
 
     $("#btn-reset").click(function () {
-        $('.cnn, .scnn, .num-box').hide();
+        $('.cnn, .scnn, .num-box, .star').hide();
         $('.d1, .d2, .d3, .d4, .d5').show();
         $('.scnn').css('stroke', 'grey');
         le = [];
@@ -84,6 +84,8 @@ $(document).ready(function () {
 
         l_le = analyse_label();
         leader = l_le[0];
+        $('.star').hide();
+        $('#star' + leader).show();
         for (let i = 0; i < 5; i++) {
             if (state[i] === true && i + 1 !== leader) {
                 $('.scnn.s' + l_le[0] + '.s' + (i + 1)).fadeIn(2000);
@@ -383,6 +385,8 @@ function report_follower(pre, del, fol) {
 
         setTimeout(function () {
             leader = l_le[0];
+            $('.star').hide();
+            $('#star' + leader).show();
             addKnowledge(del, 'inv_info_S' + del.slice(-1));
             for (let i = 1; i < 6; i++) {
                 if (i !== del.slice(-1)) {
