@@ -1,5 +1,5 @@
 let le = ['/le/000', '/le/001', '/le/002', '/le/003', '/le/004'];
-let box_width = 80;
+let box_width = 100;
 let box_height = 35;
 let SENDING_TIME = 2500;
 let WAITING_TIME = 500;
@@ -50,7 +50,6 @@ $(document).ready(function () {
     });
 
     $("#b1r").click(function () {
-        addKnowledge('d1', 'data');
         click_action(1, true);
     });
 
@@ -193,30 +192,51 @@ function connect_reqs(scr, dst) {
     }, 0);
 
     setTimeout(function () {
+        addKnowledge(dst, 'conn_req');
         send_msg(dst, scr, 'conn_ack')
     }, SENDING_TIME + WAITING_TIME);
+
+    setTimeout(function () {
+        addKnowledge(scr, 'conn_ack');
+    }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     return SENDING_TIME * 2 + WAITING_TIME * 2;
 }
 
 function read_reqs(scr, dst) {
+    let read_id = Math.floor(random() * 100);
+
     setTimeout(function () {
-        send_msg(scr, dst, 'read_req')
+        send_msg(scr, dst, 'read_req_' + read_id)
     }, 0);
 
     setTimeout(function () {
+        addKnowledge(dst, 'read_req_' + read_id);
         send_msg(dst, 'd' + dst.slice(-1), 'read_ack')
     }, SENDING_TIME + WAITING_TIME);
 
     setTimeout(function () {
+        addKnowledge('d' + dst.slice(-1), 'read_req_' + read_id);
         send_msg('d' + dst.slice(-1), dst, 'data')
     }, SENDING_TIME * 2 + WAITING_TIME * 2);
 
     setTimeout(function () {
+        addKnowledge(dst, 'data_' + read_id);
         send_msg(dst, scr, 'data')
     }, SENDING_TIME * 3 + WAITING_TIME * 3);
 
+    setTimeout(function () {
+        addKnowledge(scr, 'data_' + read_id);
+    }, SENDING_TIME * 4 + WAITING_TIME * 4);
+
     return SENDING_TIME * 4 + WAITING_TIME * 4;
+}
+
+function random() {
+    let d = new Date();
+    let seed = d.getMilliseconds();
+    let x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
 }
 
 function addKnowledge(item, msg) {
