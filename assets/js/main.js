@@ -37,9 +37,16 @@ $(document).ready(function () {
         $('.d1, .d2, .d3, .d4, .d5').show();
         $('.scnn').css('stroke', 'grey');
         le = [];
+        l_le = [];
         init = false;
         leader = -1;
+        client_connections = {
+            1: -1,
+            2: -1,
+            3: -1,
+        };
         for (let i = 1; i < 6; i++) {
+            document.getElementById('s' + i).src = "assets/images/icons/withID/s" + i + ".png";
             state[i - 1] = true;
             if (i <= 3) {
                 $('#bc' + i).html('Kc(S1),...,Kc(S5)');
@@ -50,6 +57,11 @@ $(document).ready(function () {
     });
 
     $("#btn-init").click(function () {
+        if (init === true) {
+            alert('Please reset the system, then you can initialize the system.')
+            return;
+        }
+
         let count = 0;
         for (let i = 0; i < 5; i++) {
             if (state[i] === true) {
@@ -104,6 +116,10 @@ $(document).ready(function () {
         click_action(3, false);
     });
 
+    $("#btn-speed-min").click(function () {
+        SENDING_TIME = 10000;
+    });
+
     $("#btn-speed-less").click(function () {
         SENDING_TIME *= 4 / 3;
     });
@@ -114,6 +130,10 @@ $(document).ready(function () {
 
     $("#btn-speed-more").click(function () {
         SENDING_TIME *= 2 / 3;
+    });
+
+    $("#btn-speed-max").click(function () {
+        SENDING_TIME = 500;
     });
 
     $("#inv1").click(function () {
