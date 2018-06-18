@@ -348,6 +348,11 @@ function write_reqs(scr, dst) {
 
 function report_follower(pre, del, fol) {
     if (fol === 'inv') {
+        // Be careful when using === and ==
+        if (leader == del.slice(-1)) {
+            return;
+        }
+
         setTimeout(function () {
             send_msg(del, 's' + (leader), 'inv_info_S' + del.slice(-1));
         }, 0);
@@ -355,9 +360,8 @@ function report_follower(pre, del, fol) {
         setTimeout(function () {
             addKnowledge('s' + (leader), 'inv_info_S' + del.slice(-1));
             for (let i = 1; i < 6; i++) {
-                if (i !== del.slice()) {
-                    $('.' + del + '.s' + i).hide();
-                    $('.' + del + '.s' + i).css('stroke', 'grey');
+                if (i !== del.slice(-1)) {
+                    $('.scnn.' + del + '.s' + i).hide();
                 }
             }
         }, SENDING_TIME + WAITING_TIME);
@@ -373,15 +377,14 @@ function report_follower(pre, del, fol) {
             leader = l_le[0];
             addKnowledge(del, 'inv_info_S' + del.slice(-1));
             for (let i = 1; i < 6; i++) {
-                if (i !== del.slice()) {
-                    $('.' + del + '.s' + i).hide();
-                    $('.' + del + '.s' + i).css('stroke', 'grey');
+                if (i !== del.slice(-1)) {
+                    $('.scnn.' + del + '.s' + i).hide();
                 }
             }
 
             for (let i = 0; i < l_le.length; i++) {
                 if (l_le[i] !== leader) {
-                    $('.s' + leader + '.s' + i).show();
+                    $('.s' + leader + '.s' + l_le[i]).show();
                     send_msg('s' + (leader), 's' + (l_le[i]), 'leader_info_S' + leader);
                 }
             }
@@ -424,9 +427,8 @@ function report_follower(pre, del, fol) {
         addKnowledge(pre, 'watching_S' + pre.slice(-1));
         addKnowledge(fol, 'prev_S' + pre.slice(-1));
         for (let i = 1; i < 6; i++) {
-            if (i !== del.slice()) {
-                $('.' + del + '.s' + i).hide();
-                $('.' + del + '.s' + i).css('stroke', 'grey');
+            if (i !== del.slice(-1)) {
+                $('.scnn.' + del + '.s' + i).hide();
             }
         }
     }, SENDING_TIME * 4 + WAITING_TIME * 4);
